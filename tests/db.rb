@@ -1,8 +1,15 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
 
 describe "database" do
+  before :all do
+    @scratch_dir=verify_test_scratch_dir
+  end
+
+  after :all do
+    remove_test_scratch_dir @scratch_dir
+  end
+
   before :each do
-    @scratch_dir=File.dirname(__FILE__)+"/scratch"
     @conn=establish_connection @scratch_dir+"/scratch.sqlite3"
     initialize_database @conn
   end

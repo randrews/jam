@@ -17,3 +17,12 @@ def remove_test_scratch_dir scratch_dir=Jam::JAM_DIR+"/tests/scratch"
 
   scratch_dir
 end
+
+def verify_in_memory_connection
+  unless Jam::connection
+    conn=establish_connection nil # in-memory
+    initialize_database conn
+    Jam::connection=conn
+  end
+  Jam::connection
+end

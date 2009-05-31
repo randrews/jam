@@ -1,13 +1,6 @@
 describe "models" do
   before :all do
-    @scratch_dir=verify_test_scratch_dir
-    @conn=establish_connection @scratch_dir+"/models.sqlite3"
-    initialize_database @conn
-    Jam::connection=@conn
-  end
-
-  after :all do
-    remove_test_scratch_dir @scratch_dir
+    @conn=verify_in_memory_connection
   end
 
   it "should have working model classes" do
@@ -17,5 +10,4 @@ describe "models" do
     Jam::File.set_dataset @conn[:files]
     Jam::File[1].nil?.should==false
   end
-
 end

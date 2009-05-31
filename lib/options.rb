@@ -1,5 +1,3 @@
-require "#{File.dirname(__FILE__)}/jam.rb"
-
 module JAM
   SUB_COMMANDS=%w{init tag untag agent report refresh rm mv add find}
 end

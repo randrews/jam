@@ -1,0 +1,6 @@
+#!/usr/local/bin/ruby
+
+JAM_DIR=File.dirname(__FILE__)
+require "#{JAM_DIR}/jam.rb"
+
+parse_options

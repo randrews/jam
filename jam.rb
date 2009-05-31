@@ -1,12 +1,14 @@
 require 'rubygems'
-require 'activerecord'
-require 'activesupport'
 require 'trollop'
+require 'sequel'
 
-module JAM
+module Jam
   JAM_VERSION="0.0.1" unless const_defined? "JAM_VERSION"
+
+  # The directory jam.rb is in, so we can look up global resources
+  JAM_DIR=File.dirname(__FILE__) unless const_defined? "JAM_DIR"
 end
 
-Dir[File.dirname(__FILE__)+"/lib/*.rb"].each do |file|
+Dir[Jam::JAM_DIR+"/lib/*.rb"].each do |file|
   require file
 end

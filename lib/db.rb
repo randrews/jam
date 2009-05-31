@@ -1,5 +1,9 @@
 def establish_connection filename='jam.sqlite3'
-  config={'adapter'=>'sqlite3','database'=>filename}
-  ActiveRecord::Base.establish_connection(config)
+  Sequel.sqlite(filename)
 end
 
+def initialize_database connection
+  schema=File.read(Jam::JAM_DIR+"/res/sql/schema.sql")
+  connection << schema
+  connection
+end

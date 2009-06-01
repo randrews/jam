@@ -55,4 +55,26 @@ describe "file" do
     ft2[:note].should=='value'
     ft3[:tagged_by].should=='agent'
   end
+
+  it "should have a working tagger for tags it already has" do
+    ft1=@file.tag('test_tag','value1','agent1')
+
+    ft1[:note].should=='value1'
+    ft1[:tagged_by].should=='agent1'
+
+    ft2=@file.tag('test_tag','value2','agent2')
+
+    ft2[:note].should=='value2'
+    ft2[:tagged_by].should=='agent1 agent2'
+  end
+
+  it "should have a working tags accessor" do
+    @file.tag('foo',5,'agentname')
+
+    @file.tags['foo'][:note].should=='5'
+    @file.tags['foo'][:tagged_by].should==['agentname']
+
+    @file.tags['foo'][:created_at].nil?.should==false
+    @file.tags['foo'][:updated_at].nil?.should==false
+  end
 end

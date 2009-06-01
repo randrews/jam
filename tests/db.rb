@@ -19,7 +19,6 @@ describe "database" do
   end
 
   it "should establish a connection" do
-    puts @conn.class
     @conn.is_a?(Sequel::SQLite::Database).should==true
   end
 

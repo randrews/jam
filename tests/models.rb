@@ -1,3 +1,5 @@
+require "#{File.dirname(__FILE__)}/../jam.rb"
+
 describe "models" do
   before :all do
     @conn=verify_in_memory_connection

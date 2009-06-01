@@ -12,7 +12,7 @@ create table tags (
        updated_at datetime       
 );
 
-create table file_tags (
+create table files_tags (
        id integer primary key,
        file_id integer,
        tag_id integer,

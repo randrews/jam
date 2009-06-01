@@ -24,7 +24,7 @@ describe "database" do
   end
 
   it "should create three tables" do
-    %w{files tags file_tags}.each do |tbl|
+    %w{files tags files_tags}.each do |tbl|
       @conn[tbl.to_sym].each
     end
   end

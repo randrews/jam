@@ -12,12 +12,14 @@ describe "file" do
 
     @file.add_tag @tag1
     @file.add_tag @tag2
+
+    @conn=Jam::connection
   end
 
   after :each do
-    Jam::connection << "delete from files"
-    Jam::connection << "delete from tags"
-    Jam::connection << "delete from files_tags"
+    @conn << "delete from files"
+    @conn << "delete from tags"
+    @conn << "delete from files_tags"
   end
 
   it "should set the created_at when you make one" do
@@ -29,7 +31,7 @@ describe "file" do
 
   it "should have many tags" do
     @file.tags_dataset.map(:name).should==%w{tag1 tag2}
-    Jam::connection[:files_tags].count.should==2
+    @conn[:files_tags].count.should==2
   end 
 
   it "should have a working has_tag" do
@@ -42,5 +44,15 @@ describe "file" do
     @file.get_tag('tag1').should==@tag1
     @file.get_tag('tag2').should==@tag2
     @file.get_tag('tag3').should==nil
+  end
+
+  it "should have a working tagger for new tags" do
+    ft1=@file.tag('novalue')
+    ft2=@file.tag('value','value')
+    ft3=@file.tag('value_agent','value','agent')
+
+    @file.has_tag?('novalue').should==true
+    ft2[:note].should=='value'
+    ft3[:tagged_by].should=='agent'
   end
 end

@@ -12,14 +12,26 @@ class Jam::File < Sequel::Model(Jam::connection[:files])
     self.updated_at=Time.now
   end
 
-  def tag name, note=nil, tagged_by=nil
+  def tag name, note=nil, agent_name=nil
     if has_tag? name
+      tag=tags[:name=>name]
+      ft=Jam::connection[:files_tags].filter(:file_id=>id, :tag_id=>tag.id).first
+      ft[:note] ||= note
 
-      return 1
+      if agent_name
+        ft[:tagged_by]= add_agent_name(ft[:tagged_by], agent_name)
+      end
+
+      ft[:updated_at]=Time.now
+      Jam::connection[:files_tags].filter(:id=>ft[:id]).update ft
+      ft
     else
-      return 2
+      add_tag Jam::Tag.find_or_create(:name=>name)
+      self.tag name, note, agent_name
     end
   end
+
+  def tags ; tags_dataset ; end
 
   def has_tag? name
     !self.tags_dataset.filter(:name=>name).empty?
@@ -27,5 +39,17 @@ class Jam::File < Sequel::Model(Jam::connection[:files])
 
   def get_tag name
     self.tags_dataset.filter(:name=>name).first
+  end
+
+  private
+
+  def add_agent_name old_list, new_name
+    if old_list.nil? or old_list==""
+      new_name
+    else
+      old_list=old_list.split(' ')
+      old_list << new_name
+      old_list.uniq.join(' ')
+    end
   end
 end

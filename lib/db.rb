@@ -23,7 +23,7 @@ module Jam
         require file
       end
     else
-      raise "Don't call Jam::connection= more than once"
+      [Jam::File, Jam::Tag].each{|c| c.db=conn }
     end
 
     @connection

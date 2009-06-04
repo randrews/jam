@@ -13,3 +13,7 @@ end
 Dir[Jam::JAM_DIR+"/lib/*.rb"].each do |file|
   require file
 end
+
+Dir[Jam::JAM_DIR+"/commands/*.rb"].each do |file|
+  require file
+end

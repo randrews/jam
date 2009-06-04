@@ -15,7 +15,9 @@ def parse_options opts=ARGV
 
   case cmd
   when "init"
-    cmd_opts=Trollop::options(opts) # no options
+    cmd_opts=Trollop::options(opts) do
+      opt :force, "Overwrite .jam if it exists", :default=>false, :short=>'f'
+    end
 
   else
     Trollop::die "unknown/unimplemented subcommand #{cmd}"

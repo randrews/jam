@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
 
-describe "init command" do
+describe "init command (empty dir)" do
   before :each do
     @scratch_dir=verify_test_scratch_dir
     @dotjam=@scratch_dir+"/.jam"
@@ -20,7 +20,7 @@ describe "init command" do
     FileUtils.mkdir(@dotjam)
     begin
       Jam::InitCommand.run(@scratch_dir)
-      true.should==false # we should have thrown...
+      true.should be_false # we should have thrown...
     rescue
       $!.to_s.should=="#{@dotjam} already exists; use --force to overwrite"
     end
@@ -30,7 +30,18 @@ describe "init command" do
     FileUtils.mkdir(@dotjam)
     FileUtils.touch(@dotjam+"/foo.txt")
     Jam::InitCommand.run(@scratch_dir, {:force=>true})
-    File.exists?(@dotjam).should==true
-    File.exists?(@dotjam+"/foo.txt").should==false
+    File.exists?(@dotjam).should be_true
+    File.exists?(@dotjam+"/foo.txt").should be_false
+  end
+
+  it "should create a sqlite DB" do
+    Jam::InitCommand.run(@scratch_dir)
+    File.exists?(@dotjam+"/jam.sqlite3").should be_true
+  end
+
+  it "should initialize the DB" do
+    Jam::InitCommand.run(@scratch_dir)
+    Jam::File.create(:path=>'dummy_file')
+    Jam::File[1].should_not be_nil
   end
 end

@@ -14,4 +14,11 @@ class Jam::Command
   def run
     raise NotImplementedException
   end
+
+  protected
+
+  def dotjam file=nil
+    @dotjam ||= File.join(pwd,'/.jam')
+    file.nil? ? @dotjam : File.join(@dotjam,file)
+  end
 end

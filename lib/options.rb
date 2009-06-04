@@ -1,5 +1,5 @@
 module Jam
-  SUB_COMMANDS=%w{init tag untag agent report refresh rm mv add find}
+  SUB_COMMANDS=%w{add agent find init mv refresh report rm tag untag}
 end
 
 def parse_options opts=ARGV
@@ -7,6 +7,8 @@ def parse_options opts=ARGV
   global_opts = Trollop::options(opts) do
     banner "Jam metadata tracker"
     version Jam::JAM_VERSION
+    # TODO stop_on_unknown will let us implement
+    # gem's any-unique-substring for subcommands 
     stop_on Jam::SUB_COMMANDS
   end
 

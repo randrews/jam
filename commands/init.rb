@@ -2,7 +2,10 @@ class Jam::InitCommand < Jam::Command
 
   def run
     create_dotjam
+    create_db
   end
+
+  private
 
   def create_dotjam
     if !File.exists?(dotjam)
@@ -22,7 +25,9 @@ class Jam::InitCommand < Jam::Command
     end
   end
 
-  def dotjam
-    File.join(pwd,'/.jam')
+  def create_db
+    conn=establish_connection dotjam('jam.sqlite3')
+    initialize_database conn
+    Jam.connection=conn
   end
 end

@@ -1,2 +1,6 @@
+# ignore emacs temp files in any directory
 **/*~
+
+# ignore all hidden files
+# (note: .jam is ignored anyway)
 **/.*

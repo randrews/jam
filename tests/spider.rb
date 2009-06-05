@@ -1,29 +1,34 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
 
-describe "spider module" do
+module FileLister
   include Jam::Spider
 
-  before :all do
-    @scratch_dir=verify_test_scratch_dir
-    `cp -r #{Jam::JAM_DIR}/tests/fixtures/simple_dir/* #{@scratch_dir}`
-  end
+  def files_for fixture
+    scratch_dir=verify_test_scratch_dir
+    prep_test_tree scratch_dir, fixture
 
-  after :all do
-    remove_test_scratch_dir @scratch_dir
-  end
-
-  before :each do
-    @files=[]
-    spider_directory @scratch_dir do |file|
-      @files << file
+    files=[]
+    spider_directory scratch_dir do |file|
+      files << file
     end
+
+    remove_test_scratch_dir scratch_dir
+    files
+  end
+end
+
+describe "spider module (no ignores)" do
+  include FileLister
+
+  before :all do
+    @files=files_for 'simple_dir'
   end
 
   it "should find all the files" do
     @files.size.should==4
   end
 
-  it "should find the filea outside a directory" do
+  it "should find the files outside a directory" do
     @files.index("one.txt").should_not be_nil
     @files.index("two.txt").should_not be_nil
   end
@@ -40,4 +45,15 @@ describe "spider module" do
     @files.index("dir1").should be_nil
     @files.index("dir1/dir2").should be_nil
   end
+end
+
+describe "spider module (with ignores)" do
+  include FileLister
+  attr_accessor :ignores
+
+  it "should find .hidden with no ignores" do
+    self.ignores=nil
+    files_for('ignores_dir').index('.hidden').should_not be_nil
+  end
+  
 end

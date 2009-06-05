@@ -26,3 +26,7 @@ def verify_in_memory_connection
   end
   Jam::connection
 end
+
+def prep_test_tree scratch_dir, tree_name
+  `cp -R #{Jam::JAM_DIR}/tests/fixtures/#{tree_name}/ #{scratch_dir}`
+end

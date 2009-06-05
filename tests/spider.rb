@@ -55,5 +55,48 @@ describe "spider module (with ignores)" do
     self.ignores=nil
     files_for('ignores_dir').index('.hidden').should_not be_nil
   end
-  
+
+  it "should ignore filenames in any directory" do
+    self.ignores=['**/ignored.txt']
+    files=files_for('ignores_dir')
+
+    files.index('ignored.txt').should be_nil
+    files.index('dir1/ignored.txt').should be_nil
+
+    files.index('one.txt').should_not be_nil
+    files.index('dir1/three.txt').should_not be_nil
+  end
+
+  it "should ignore file paths in just that directory" do
+    self.ignores=['dir1/ignored.txt']
+    files=files_for('ignores_dir')
+
+    files.index('ignored.txt').should_not be_nil
+    files.index('dir1/ignored.txt').should be_nil
+
+    files.index('one.txt').should_not be_nil
+    files.index('dir1/three.txt').should_not be_nil
+  end
+
+  it "should ignore entire directories" do
+    self.ignores=['dir1/*']
+    files=files_for('ignores_dir')
+
+    files.index('ignored.txt').should_not be_nil
+    files.index('one.txt').should_not be_nil
+
+    files.index('dir1/ignored.txt').should be_nil
+    files.index('dir1/three.txt').should be_nil
+  end
+
+  it "should ignore certain extensions" do
+    self.ignores=["**/*.txt"]
+    files=files_for('ignores_dir')
+
+    files.index('ignored.txt').should be_nil
+    files.index('dir1/three.txt').should be_nil
+
+    files.index('.hidden').should_not be_nil
+  end
+
 end

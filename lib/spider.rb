@@ -25,6 +25,7 @@ module Jam::Spider
   def matches_any? path, ignores=[]
     unless ignores.nil? or ignores.empty?
       ignores.each do |i|
+        
         return true if File.fnmatch?(i,path,File::FNM_PATHNAME)
       end
     end

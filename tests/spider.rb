@@ -99,4 +99,11 @@ describe "spider module (with ignores)" do
     files.index('.hidden').should_not be_nil
   end
 
+  it "should ignore hidden files" do
+    self.ignores=["**/.*"]
+    files=files_for('ignores_dir')
+
+    files.index('.hidden').should be_nil
+    files.index('one.txt').should_not be_nil
+  end
 end

@@ -1,25 +1,31 @@
 module Jam::Spider
-  def spider_directory dir # expects a block, passed a filename
+  def spider_directory dir, from=dir # expects a block, passed a filename
     ignores=[]
     if self.respond_to? :ignores
       ignores=self.ignores || []
     end
 
-    FileUtils.cd(dir) do
-      file_list(dir,ignores).each do |path| # All these paths are relative to dir
-        yield path
-      end
+    file_list(dir,ignores,from).each do |path| # All these paths are relative to dir
+      yield path
     end
   end
 
   private
 
-  def file_list dir, ignores=[]
-    list=Dir.glob("**/*",File::FNM_DOTMATCH)
+  def file_list dir, ignores=[], from=dir
+    list=Dir.glob("#{dir}/**/*",File::FNM_DOTMATCH)
 
-    list.delete_if do |path|
-      File.directory?(path) or matches_any?(path,ignores)
+    reallist=[]
+
+    list.each do |path|
+      next if File.directory?(path)
+      path=clean(path,from)
+      next if matches_any?(path,ignores)
+
+      reallist << path
     end
+
+    reallist
   end
 
   def matches_any? path, ignores=[]
@@ -30,5 +36,9 @@ module Jam::Spider
       end
     end
     false
+  end
+
+  def clean path, from_path
+    Pathname.new(path).relative_path_from(Pathname.new(from_path)).to_s
   end
 end

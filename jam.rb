@@ -2,6 +2,7 @@ require 'rubygems'
 require 'trollop'
 require 'sequel'
 require 'fileutils'
+require 'pathname'
 
 module Jam
   JAM_VERSION="0.0.1" unless const_defined? "JAM_VERSION"

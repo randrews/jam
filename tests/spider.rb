@@ -102,8 +102,30 @@ describe "spider module (with ignores)" do
   it "should ignore hidden files" do
     self.ignores=["**/.*"]
     files=files_for('ignores_dir')
-
+    puts files.inspect
     files.index('.hidden').should be_nil
     files.index('one.txt').should_not be_nil
+  end
+
+  it "should handle the from dir being different from the spider dir" do
+    self.ignores=[]
+
+    scratch_dir=verify_test_scratch_dir
+    prep_test_tree scratch_dir, 'simple_dir'
+
+    files=[]
+    spider_directory(scratch_dir+"/dir1", scratch_dir) do |file|
+      files << file
+    end
+
+    remove_test_scratch_dir scratch_dir
+
+    puts files.inspect
+
+    files.index("dir1/three.txt").should_not be_nil
+    files.index("dir1/dir2/four.txt").should_not be_nil
+
+    files.index("one.txt").should be_nil
+    files.index("two.txt").should be_nil
   end
 end

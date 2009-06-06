@@ -3,6 +3,7 @@ class Jam::InitCommand < Jam::Command
   def run
     create_dotjam
     create_db
+    copy_defaults
   end
 
   private
@@ -29,5 +30,10 @@ class Jam::InitCommand < Jam::Command
     conn=establish_connection dotjam('jam.sqlite3')
     initialize_database conn
     Jam.connection=conn
+  end
+
+  def copy_defaults
+    src=File.join(Jam::JAM_DIR,'res','defaults','.')
+    FileUtils.cp_r(src, dotjam)
   end
 end

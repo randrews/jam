@@ -1,4 +1,8 @@
+require(File.dirname(__FILE__)+"/ignores_file.rb")
+
 class Jam::Command
+  include Jam::IgnoresFile
+
   attr_reader :pwd
   attr_reader :opts
   attr_reader :targets
@@ -20,5 +24,9 @@ class Jam::Command
   def dotjam file=nil
     @dotjam ||= File.join(pwd,'/.jam')
     file.nil? ? @dotjam : File.join(@dotjam,file)
+  end
+
+  def ignores_filename
+    dotjam('ignore')
   end
 end

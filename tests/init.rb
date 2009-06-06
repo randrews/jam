@@ -44,4 +44,9 @@ describe "init command (empty dir)" do
     Jam::File.create(:path=>'dummy_file')
     Jam::File[1].should_not be_nil
   end
+
+  it "should create a default ignore file" do
+    Jam::InitCommand.run(@scratch_dir)
+    File.exists?(@dotjam+"/ignore").should be_true
+  end
 end

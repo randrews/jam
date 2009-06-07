@@ -10,12 +10,14 @@ class Jam::Command
   attr_reader :targets
 
   def initialize pwd, opts={}, targets=[]
-    @pwd=pwd;@opts=opts;@targets=targets
+    @pwd=File.expand_path(pwd);@opts=opts;@targets=targets
   end
 
   def self.run pwd, opts={}, targets=[]
+    # This has no effect except in test, since it's
+    # assumed that pwd is the real pwd.
     FileUtils.cd pwd do
-      new('.', opts, targets).run
+      new(pwd, opts, targets).run
     end
   end
 
@@ -24,26 +26,47 @@ class Jam::Command
   end
 
   def to_targets targets, &blk
+    # Each of targets is a path, either absolute or relative to pwd.
+
     targets.each do |file|
       if File.directory? file
-        spider_directory file, root do |path|
+        spider_directory file do |path|
           to_targets [path], &blk
         end
       else
-        yield file
+        yield relroot(file)
       end
     end
   end
 
   protected
 
+  def relroot path
+    Pathname.new(File.expand_path(path)).
+      relative_path_from(Pathname.new(File.expand_path(root))).to_s
+  end
+
   def dotjam file=nil
-    @dotjam ||= File.join(pwd,'/.jam')
+    @dotjam ||= (find_dotjam(pwd) or File.join(pwd,'.jam'))
     file.nil? ? @dotjam : File.join(@dotjam,file)
   end
 
+  def find_dotjam path
+    curr=File.join(path,'.jam')
+    if File.directory?(curr)
+      curr
+    else
+      up=File.join(path,'..')
+      if File.directory? up
+        find_dotjam up
+      else
+        nil
+      end
+    end
+  end
+
   def root
-    File.dirname dotjam
+    @root ||= File.dirname(dotjam)
   end
 
   def ignores_filename

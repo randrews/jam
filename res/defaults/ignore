@@ -2,5 +2,7 @@
 **/*~
 
 # ignore all hidden files
-# (note: .jam is ignored anyway)
 **/.*
+
+# ignore .jam (do not remove this!)
+.jam/**/*

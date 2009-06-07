@@ -5,7 +5,7 @@ describe "models" do
   after(:all){ remove_test_scratch_dir @scratch_dir }
 
   before :each do
-    @conn=verify_in_memory_connection
+    @conn=verify_in_memory_connection true
 
     @conn << "delete from files"
     @conn[:files].insert(:id=>1, :path=>'foo.txt')

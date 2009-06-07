@@ -1,5 +1,8 @@
 class Jam::Tag < Sequel::Model(Jam::connection[:tags])
-  many_to_many :file
+
+  def self.apply_associations
+    many_to_many :file, :class=>Jam::File
+  end
 
   def before_create
     self.created_at=Time.now

@@ -1,15 +1,21 @@
 require File.dirname(__FILE__)+'/tag.rb'
 
 class Jam::File < Sequel::Model(Jam::connection[:files])
-  many_to_many :tags, :class=>Jam::Tag
+  def self.apply_associations
+    many_to_many :tags, :class=>Jam::Tag
+  end
 
   def before_create
     self.created_at=Time.now
     self.updated_at=Time.now
   end
-  
+
   def before_update
     self.updated_at=Time.now
+  end
+
+  def self.at path
+    self.find :path=>path
   end
 
   def tag name, note=nil, agent_name=nil, set_created_at=false

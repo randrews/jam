@@ -29,4 +29,8 @@ class Jam::Command
   def ignores_filename
     dotjam('ignore')
   end
+
+  def connect_to_db
+    Jam.connection=establish_connection(dotjam('jam.sqlite3'))
+  end
 end

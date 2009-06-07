@@ -2,7 +2,8 @@ require "#{File.dirname(__FILE__)}/../jam.rb"
 
 describe "file" do
   before :all do
-    verify_in_memory_connection
+    verify_in_memory_connection true
+    @conn=Jam::connection
   end
 
   before :each do
@@ -12,8 +13,6 @@ describe "file" do
 
     @file.add_tag @tag1
     @file.add_tag @tag2
-
-    @conn=Jam::connection
   end
 
   after :each do

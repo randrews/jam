@@ -10,8 +10,6 @@ end
 
 # Jam has a handle to the Sequel connection, and we can't load the
 # model classes until it's set (because it defines their datasets).
-# However, once we've loaded them, we can't (yet) change what the
-# connection is.
 module Jam
   def self.connection ; @connection ; end
 
@@ -23,8 +21,11 @@ module Jam
         require file
       end
     else
+      @connection=conn
       [Jam::File, Jam::Tag].each{|c| c.db=conn }
     end
+
+    [Jam::File, Jam::Tag].each {|c| c.apply_associations }
 
     @connection
   end

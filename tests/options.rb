@@ -13,4 +13,19 @@ describe "options parser" do
     parse_options(["init", "-f"])[:command_opts][:force].should==true
     parse_options(["init"])[:command_opts][:force].should==false
   end
+
+  it "should recognize add" do
+    parse_options(["add"])[:command].should=='add'
+  end
+
+  it "should recognize params on tag" do
+    opts=parse_options(["tag", "-n", "foo"])
+    opts[:command].should=='tag'
+    opts[:command_opts][:note]=='foo'
+
+    parse_options(["tag"])[:note].should be_nil
+    
+    opts2=parse_options(["tag", 'foo', '1', '2'])
+    opts2[:targets].should==%w{foo 1 2}
+  end
 end

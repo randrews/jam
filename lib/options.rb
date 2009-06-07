@@ -21,6 +21,15 @@ def parse_options opts=ARGV
       opt :force, "Overwrite .jam if it exists", :default=>false, :short=>'f'
     end
 
+  when "add"
+    cmd_opts=Trollop::options(opts)
+
+  when "tag"
+    cmd_opts=Trollop::options(opts) do
+      opt :note, "The value to apply to the file for this tag", :short=>'n'
+      opt :agent, "The agent name to use when applying this tag", :short=>'a'
+    end
+
   else
     Trollop::die "unknown/unimplemented subcommand #{cmd}"
   end
@@ -28,5 +37,5 @@ def parse_options opts=ARGV
   return {:global_opts=>global_opts,
     :command=>cmd,
     :command_opts=>cmd_opts,
-    :remaining_args=>opts}
+    :targets=>opts}
 end

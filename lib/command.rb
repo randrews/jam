@@ -23,6 +23,18 @@ class Jam::Command
     raise NotImplementedException
   end
 
+  def to_targets targets, &blk
+    targets.each do |file|
+      if File.directory? file
+        spider_directory file, root do |path|
+          to_targets [path], &blk
+        end
+      else
+        yield file
+      end
+    end
+  end
+
   protected
 
   def dotjam file=nil

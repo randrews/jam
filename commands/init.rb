@@ -18,7 +18,7 @@ class Jam::InitCommand < Jam::Command
         FileUtils.rm_rf dotjam
         create_dotjam
       else
-        raise "#{dotjam} already exists; use --force to overwrite"
+        raise "#{File.expand_path(dotjam)} already exists; use --force to overwrite"
       end
     elsif File.exists?(dotjam) and !File.directory?(dotjam)
       # .jam already exists and isn't a dir, even --force won't save us.

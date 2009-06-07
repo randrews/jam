@@ -8,13 +8,13 @@ module Jam::Spider
       ignores=self.ignores || []
     end
 
-    rel=Pathname.new(dir).relative_path_from(Pathname.new(from)).to_s
-
     files=[] unless block_given?
+
+    relpath=rel(dir,from)
 
     FileUtils.cd(dir) do
       file_list.each do |path|
-        path=File.join(rel, path) if(dir!=from)
+        path=File.join(relpath, path) if(dir!=from)
         next if matches_any?(path,ignores)
 
         block_given? ? (yield path) : (files << path)
@@ -41,5 +41,10 @@ module Jam::Spider
       end
     end
     false
+  end
+
+  def rel to, from
+    Pathname.new(File.expand_path(to)).
+      relative_path_from(Pathname.new(File.expand_path(from))).to_s
   end
 end

@@ -14,7 +14,9 @@ class Jam::Command
   end
 
   def self.run pwd, opts={}, targets=[]
-    new(pwd, opts, targets).run
+    FileUtils.cd pwd do
+      new('.', opts, targets).run
+    end
   end
 
   def run

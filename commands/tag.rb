@@ -4,14 +4,27 @@ class Jam::TagCommand < Jam::Command
     connect_to_db
 
     t=targets
-    @tag=t.shift
+    tagname=t.shift
     raise "No targets given" if t.empty?
 
-    @note=opts[:command_opts][:note] rescue nil
-    @agent=opts[:command_opts][:agent] rescue nil
+    if (opts[:command_opts][:delete] rescue nil)
 
-    to_targets t do |file|
-      Jam::File.at(file).tag(@tag,@note,@agent)
+      tag=Jam::Tag.find :name=>tagname
+      raise "Tag #{tagname} not found" if tag.nil?
+
+      to_targets t do |path|
+        Jam::File.at(path).remove_tag tag
+      end
+
+    else
+
+      note=opts[:command_opts][:note] rescue nil
+      agent=opts[:command_opts][:agent] rescue nil
+
+      to_targets t do |path|
+        Jam::File.at(path).tag(tagname,note,agent)
+      end
+
     end
   end
 end

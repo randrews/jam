@@ -28,6 +28,7 @@ def parse_options opts=ARGV
     cmd_opts=Trollop::options(opts) do
       opt :note, "The value to apply to the file for this tag", :short=>'n'
       opt :agent, "The agent name to use when applying this tag", :short=>'a'
+      opt :delete, "Delete the tag instead of applying it", :default=>false, :short=>'d'
     end
 
   else

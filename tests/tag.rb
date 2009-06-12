@@ -60,4 +60,18 @@ describe "tag command" do
     Jam::File.at('dir1/three.txt').has_tag?('tag1').should be_true
     Jam::File.at('dir1/dir2/four.txt').has_tag?('tag1').should be_false
   end
+
+  it "should delete tags with -d" do
+    Jam::TagCommand.run(@scratch_dir,
+                        {},
+                        %w{tag1 one.txt})
+
+    Jam::File.at('one.txt').has_tag?('tag1').should be_true
+
+    Jam::TagCommand.run(@scratch_dir,
+                        {:command_opts=>{:delete=>true}},
+                        %w{tag1 one.txt})
+
+    Jam::File.at('one.txt').has_tag?('tag1').should be_false
+  end
 end

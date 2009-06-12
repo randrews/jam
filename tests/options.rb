@@ -28,4 +28,12 @@ describe "options parser" do
     opts2=parse_options(["tag", 'foo', '1', '2'])
     opts2[:targets].should==%w{foo 1 2}
   end
+
+  it "should recognize delete flag on tag" do
+    opts=parse_options(["tag", '-d', 'foo', '1', '2'])
+    opts[:command_opts][:delete].should_not be_false
+
+    opts2=parse_options(["tag", 'foo', '1', '2'])
+    opts2[:command_opts][:delete].should be_false
+  end
 end

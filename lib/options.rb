@@ -1,5 +1,6 @@
 module Jam
-  SUB_COMMANDS=%w{add agent find init mv refresh report rm tag untag}
+#   SUB_COMMANDS=%w{add agent find init mv refresh report rm tag}
+  SUB_COMMANDS=%w{add init tag list}
 end
 
 def parse_options opts=ARGV
@@ -30,6 +31,9 @@ def parse_options opts=ARGV
       opt :agent, "The agent name to use when applying this tag", :short=>'a'
       opt :delete, "Delete the tag instead of applying it", :default=>false, :short=>'d'
     end
+
+  when "list"
+    cmd_opts=Trollop::options(opts)
 
   else
     Trollop::die "unknown/unimplemented subcommand #{cmd}"

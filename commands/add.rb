@@ -7,7 +7,7 @@ class Jam::AddCommand < Jam::Command
     t=[pwd] if t.empty?
 
 
-    to_targets t do |file|
+    to_targets t do |file, tgt|
       Jam::File.find_or_create :path=>file
     end
   end

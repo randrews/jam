@@ -12,7 +12,7 @@ class Jam::TagCommand < Jam::Command
       tag=Jam::Tag.find :name=>tagname
       raise "Tag #{tagname} not found" if tag.nil?
 
-      to_targets t do |path|
+      to_targets t do |path, tgt|
         Jam::File.at(path).remove_tag tag
       end
 
@@ -21,7 +21,7 @@ class Jam::TagCommand < Jam::Command
       note=opts[:command_opts][:note] rescue nil
       agent=opts[:command_opts][:agent] rescue nil
 
-      to_targets t do |path|
+      to_targets t do |path, tgt|
         Jam::File.at(path).tag(tagname,note,agent)
       end
 

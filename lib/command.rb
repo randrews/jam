@@ -34,7 +34,7 @@ class Jam::Command
           to_targets [path], &blk
         end
       else
-        yield relroot(file)
+        yield relroot(file), file
       end
     end
   end

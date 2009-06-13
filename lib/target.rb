@@ -10,6 +10,7 @@ class Jam::Target
   attr_reader :path, :abs
   extend Jam::Dotjam
   extend Jam::Spider
+  extend Jam::IgnoresFile
 
   # Turns a string representing a path either absolute or relative to pwd
   # into an array of Jam::Targets for that path:
@@ -28,6 +29,10 @@ class Jam::Target
     else
       []
     end
+  end
+
+  def self.ignores_filename
+    dotjam('ignore')
   end
 
   ########################################

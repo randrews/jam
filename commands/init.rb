@@ -9,7 +9,7 @@ class Jam::InitCommand < Jam::Command
   private
 
   def create_dotjam
-    if !File.exists?(dotjam)
+    if find_dotjam.nil?
       # no .jam, proceed with making one
       FileUtils.mkdir dotjam
     elsif File.exists?(dotjam) and File.directory?(dotjam)

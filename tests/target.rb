@@ -42,5 +42,22 @@ describe "target" do
     end
   end
 
-  it "should spider directories"
+  it "should spider directories" do
+    FileUtils.cd(@scratch_dir) do
+      (four, three)=*Jam::Target.from_path("dir1")
+      four.relroot.should=="dir1/dir2/four.txt"
+      three.relroot.should=="dir1/three.txt"
+    end
+  end
+
+  it "should find the record for a file" do
+    FileUtils.cd(@scratch_dir+'/dir1') do
+      three=Jam::Target.from_path("three.txt")[0]
+      three.file.path.should=='dir1/three.txt'
+
+      two=Jam::Target.from_path("../two.txt")[0]
+      two.file.path.should=='two.txt'
+    end
+  end
+
 end

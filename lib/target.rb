@@ -9,6 +9,7 @@
 class Jam::Target
   attr_reader :path, :abs
   extend Jam::Dotjam
+  extend Jam::Spider
 
   # Turns a string representing a path either absolute or relative to pwd
   # into an array of Jam::Targets for that path:
@@ -17,9 +18,11 @@ class Jam::Target
   # Any ignored patterns get removed from the array
   def self.from_path path
     if File.directory? path
-      spider_directory file do |path|
-
+      files=[]
+      spider_directory(path,FileUtils.pwd) do |file|
+        files << Jam::Target.new(file)
       end
+      files
     elsif File.exists? path
       [Jam::Target.new(path)]
     else
@@ -41,7 +44,7 @@ class Jam::Target
   end
 
   def file
-    File.new abs
+    Jam::File.at relroot
   end
 
   protected

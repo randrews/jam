@@ -55,4 +55,11 @@ describe "list command" do
     Jam::ListCommand.emitted[2].should=="\ttag2"
   end
 
+  it "should list from a directory" do
+    Jam::ListCommand.run(@scratch_dir+"/dir1", {}, [])
+    Jam::ListCommand.emitted[0].should=="dir2/four.txt"
+    Jam::ListCommand.emitted[1].should=="three.txt"
+    Jam::ListCommand.emitted[2].should=="\ttag2"
+  end
+
 end

@@ -6,9 +6,9 @@ class Jam::ListCommand < Jam::Command
     t=['.'] if t.empty?
 
     to_targets t do |path, tgt|
-      file=Jam::File.at(path)
-      next unless file
-      emit path
+      file=tgt.file || next
+
+      emit rel(tgt.path,'.')
       file.tags.each do |name, params|
         if params[:note]
           emit "\t#{name} = #{params[:note]}"

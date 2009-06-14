@@ -30,3 +30,11 @@ end
 def prep_test_tree scratch_dir, tree_name
   `cp -R #{Jam::JAM_DIR}/tests/fixtures/#{tree_name}/ #{scratch_dir}`
 end
+
+class Symbol
+  def to_proc
+    Proc.new do |tgt|
+      tgt.send(self.to_s)
+    end
+  end
+end

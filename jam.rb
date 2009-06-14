@@ -4,6 +4,7 @@ require 'sequel'
 require 'fileutils'
 require 'pathname'
 require 'ruby-debug'
+require 'dhaka'
 
 module Jam
   JAM_VERSION="0.0.1" unless const_defined? "JAM_VERSION"
@@ -13,6 +14,10 @@ module Jam
 end
 
 Dir[Jam::JAM_DIR+"/lib/*.rb"].each do |file|
+  require file
+end
+
+Dir[Jam::JAM_DIR+"/parser/*.rb"].each do |file|
   require file
 end
 

@@ -3,7 +3,7 @@ require "#{File.dirname(__FILE__)}/../jam.rb"
 describe "query language lexer" do
   def tokens str
     t=[]
-    QueryLexer.lex(str).each do |token|
+    Jam::QueryLexer.lex(str).each do |token|
       t << token
     end
     t

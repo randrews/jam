@@ -1,4 +1,4 @@
-class QueryLexerSpecification < Dhaka::LexerSpecification
+class Jam::QueryLexerSpecification < Dhaka::LexerSpecification
   operators = { 
     '(' => '\(',
     ')' => '\)',
@@ -33,4 +33,4 @@ class QueryLexerSpecification < Dhaka::LexerSpecification
   end
 end
 
-QueryLexer = Dhaka::Lexer.new(QueryLexerSpecification)
+Jam::QueryLexer = Dhaka::Lexer.new(Jam::QueryLexerSpecification)

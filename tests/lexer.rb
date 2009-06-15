@@ -38,9 +38,9 @@ describe "query language lexer" do
   end
 
   it "should recognize strings" do
-    t=tokens("'foo' '' 'it\\'s' 'and' '\\\\'")
+    t=tokens "'foo' '' 'it\\'s' 'and' '\\\\'"
 
+    t[0..4].map(&:value).should==["foo","","it's", "and", "\\"]
     t[0..4].map(&:symbol_name).should==['string']*5
-    t[0..4].map(&:value).should==%w{'foo' '' 'it\'s' 'and' '\\'}
   end
 end

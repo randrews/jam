@@ -18,7 +18,10 @@ class QueryLexerSpecification < Dhaka::LexerSpecification
   end
 
   for_pattern(/'([^\\']|\\[\\'])*'/) do
-    create_token('string')
+    raw=current_lexeme.value
+    escaped=raw.gsub('\\\'','\'').gsub('\\\\','\\')
+    dequoted=escaped[1..(escaped.length-2)]
+    create_token('string',dequoted)
   end
 
   for_pattern(/[a-zA-Z0-9_\-]+/) do

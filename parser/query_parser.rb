@@ -21,8 +21,8 @@ class Jam::QueryGrammar < Dhaka::Grammar
   end
 
   for_symbol('Value') do
-    string_value        %w| string |
-    number_value        %w| number |
+    string              %w| string |
+    number              %w| number |
   end
 end
 

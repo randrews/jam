@@ -1,7 +1,6 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
 
 describe "query language parser" do
-
   def tree str
     Jam::QueryParser.parse(Jam::QueryLexer.lex(str))
   end

@@ -9,8 +9,8 @@ class Jam::QueryGrammar < Dhaka::Grammar
   end
 
   for_symbol('Query') do
-    intersection        %w| Clause and Query |
-    union               %w| Clause or Query |
+    intersection        %w| Query and Query |
+    union               %w| Query or Query |
     oneclause           %w| Clause |
     parenthesized_query %w| ( Query ) |
   end

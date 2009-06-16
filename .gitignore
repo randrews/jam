@@ -1,3 +1,5 @@
 *~
 *.sqlite3
 *.gem
+*.dot
+.DS_Store

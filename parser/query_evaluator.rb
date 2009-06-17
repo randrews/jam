@@ -50,7 +50,16 @@ class Jam::QueryEvaluator < Dhaka::Evaluator
     for_equality do
       sym=child_nodes[0].token.value
       val=evaluate child_nodes[2]
-      emit "file.tag('#{sym}')[:note]==#{val}"
+
+      emit "(file.has_tag?('#{sym}') and "
+
+      if val.is_a? String
+        emit "file.tag('#{sym}')[:note]==#{val}"
+      else
+        emit "file.tag('#{sym}')[:note].to_f==#{val}"
+      end
+
+      emit ")"
     end
 
     for_string do
@@ -59,15 +68,19 @@ class Jam::QueryEvaluator < Dhaka::Evaluator
     end
 
     for_number do
-      child_nodes[0].token.value
+      child_nodes[0].token.value.to_f
     end
   end
 
-  def self.evaluate str
+  def self.evaluate query
+    evaluate_tree(Jam::QueryParser.
+                  parse(Jam::QueryLexer.
+                        lex(query)))
+  end
+
+  def self.evaluate_tree tree
     ev=Jam::QueryEvaluator.new
-    ev.evaluate(Jam::QueryParser.
-                parse(Jam::QueryLexer.
-                      lex(str)))
+    ev.evaluate(tree)
     ev
   end
 

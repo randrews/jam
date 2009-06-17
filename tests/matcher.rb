@@ -55,5 +55,8 @@ describe "matcher" do
     files.should==[Jam::File.at('dir1/three.txt')]
   end
 
-  it "should handle negation"
+  it "should handle negation" do
+    files=query("num1 and not num1 = 1")
+    files.map(&:path).sort.should==['dir1/three.txt', 'two.txt']
+  end
 end

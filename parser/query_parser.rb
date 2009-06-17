@@ -16,6 +16,7 @@ class Jam::QueryGrammar < Dhaka::Grammar
   end
 
   for_symbol('Clause') do
+    negated             %w| not Clause |
     equality            %w| symbol = Value |
     presence            %w| symbol |
     gt                  %w| symbol > Value |

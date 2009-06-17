@@ -30,6 +30,12 @@ class Jam::QueryEvaluator < Dhaka::Evaluator
       evaluate child_nodes[0]
     end
 
+    for_negated do
+      emit "!("
+      evaluate child_nodes[1]
+      emit ")"
+    end
+
     for_intersection do
       evaluate child_nodes[0]
       emit "and"
@@ -113,7 +119,7 @@ class Jam::QueryEvaluator < Dhaka::Evaluator
   private
 
   def comparison_clause sym, val, operator
-    emit "(file.has_tag?('#{sym}') and "
+    emit "(file.has_tag?('#{sym}') and"
     
     if val.is_a? String
       emit "file.tag('#{sym}')[:note] #{operator} #{val}"

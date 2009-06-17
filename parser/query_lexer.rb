@@ -5,6 +5,7 @@ class Jam::QueryLexerSpecification < Dhaka::LexerSpecification
     '=' => '=',
     'and' => 'and',
     'or' => 'or',
+    'not' => 'not',
     '>' => '>',
     '<' => '<',
     '>=' => '>=',

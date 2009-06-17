@@ -21,7 +21,10 @@ task :parse do
 
   require File.join(File.dirname(__FILE__),'jam.rb')
 
-  File.open(filename, 'w') do |file| 
-    file << Jam::QueryParser.parse(Jam::QueryLexer.lex(query)).to_dot
+  tree = Jam::QueryParser.parse(Jam::QueryLexer.lex(query))
+  puts Jam::QueryEvaluator.evaluate_tree(tree).text
+
+  File.open(filename, 'w') do |file|
+    file << tree.to_dot
   end
 end

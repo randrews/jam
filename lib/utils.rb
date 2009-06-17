@@ -38,3 +38,10 @@ class Symbol
     end
   end
 end
+
+def create_fake_logger
+  logger = Logger.new(STDOUT)
+  logger.level = Logger::ERROR
+  logger.formatter = Dhaka::ParserLogOutputFormatter.new
+  logger
+end

@@ -26,4 +26,4 @@ class Jam::QueryGrammar < Dhaka::Grammar
   end
 end
 
-Jam::QueryParser = Dhaka::Parser.new(Jam::QueryGrammar)
+Jam::QueryParser = Dhaka::Parser.new(Jam::QueryGrammar, create_fake_logger)

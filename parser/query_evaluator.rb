@@ -50,16 +50,7 @@ class Jam::QueryEvaluator < Dhaka::Evaluator
     for_equality do
       sym=child_nodes[0].token.value
       val=evaluate child_nodes[2]
-
-      emit "(file.has_tag?('#{sym}') and "
-
-      if val.is_a? String
-        emit "file.tag('#{sym}')[:note]==#{val}"
-      else
-        emit "file.tag('#{sym}')[:note].to_f==#{val}"
-      end
-
-      emit ")"
+      comparison_clause sym,val,'=='
     end
 
     for_string do
@@ -69,6 +60,30 @@ class Jam::QueryEvaluator < Dhaka::Evaluator
 
     for_number do
       child_nodes[0].token.value.to_f
+    end
+
+    for_gt do
+      sym=child_nodes[0].token.value
+      val=evaluate child_nodes[2]
+      comparison_clause sym,val,'>'
+    end
+
+    for_lt do
+      sym=child_nodes[0].token.value
+      val=evaluate child_nodes[2]
+      comparison_clause sym,val,'<'
+    end
+
+    for_ge do
+      sym=child_nodes[0].token.value
+      val=evaluate child_nodes[2]
+      comparison_clause sym,val,'>='
+    end
+
+    for_le do
+      sym=child_nodes[0].token.value
+      val=evaluate child_nodes[2]
+      comparison_clause sym,val,'<='
     end
   end
 
@@ -93,5 +108,19 @@ class Jam::QueryEvaluator < Dhaka::Evaluator
   def emit str
     @lines||=[]
     @lines << str
+  end
+
+  private
+
+  def comparison_clause sym, val, operator
+    emit "(file.has_tag?('#{sym}') and "
+    
+    if val.is_a? String
+      emit "file.tag('#{sym}')[:note] #{operator} #{val}"
+    else
+      emit "file.tag('#{sym}')[:note].to_f #{operator} #{val}"
+    end
+
+    emit ")"
   end
 end

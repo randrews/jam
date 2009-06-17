@@ -4,7 +4,11 @@ class Jam::QueryLexerSpecification < Dhaka::LexerSpecification
     ')' => '\)',
     '=' => '=',
     'and' => 'and',
-    'or' => 'or'
+    'or' => 'or',
+    '>' => '>',
+    '<' => '<',
+    '>=' => '>=',
+    '<=' => '<='
   }
 
   operators.each do |operator, regex|

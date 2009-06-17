@@ -47,6 +47,13 @@ describe "matcher" do
     files.should==[Jam::File.at('dir1/three.txt')]
   end
 
-  it "should handle greater/less than"
+  it "should handle greater/less than" do
+    files=query("num1>1")
+    files.should==[Jam::File.at('two.txt')]
+
+    files=query("num1>'a'")
+    files.should==[Jam::File.at('dir1/three.txt')]
+  end
+
   it "should handle negation"
 end

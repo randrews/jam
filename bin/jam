@@ -1,0 +1,7 @@
+#!/usr/local/bin/ruby
+
+JAM_DIR=File.dirname(__FILE__)
+require "#{JAM_DIR}/../jam.rb"
+
+opts=parse_options
+opts[:command_class].run '.', opts, opts[:targets]

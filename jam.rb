@@ -1,10 +1,13 @@
 require 'rubygems'
-require 'trollop'
-require 'sequel'
+
 require 'fileutils'
 require 'pathname'
-require 'ruby-debug'
+
+require 'trollop'
+require 'sequel'
 require 'dhaka'
+
+require 'ruby-debug' rescue nil
 
 module Jam
   JAM_VERSION="0.0.1" unless const_defined? "JAM_VERSION"

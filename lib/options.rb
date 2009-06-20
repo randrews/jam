@@ -1,6 +1,6 @@
 module Jam
 #   SUB_COMMANDS=%w{add agent find init mv refresh report rm tag}
-  SUB_COMMANDS=%w{add init tag list}
+  SUB_COMMANDS=%w{add init tag list find}
 end
 
 def parse_options opts=ARGV
@@ -44,6 +44,24 @@ def parse_options opts=ARGV
 
   return {:global_opts=>global_opts,
     :command=>cmd,
+    :command_class=>class_for_command(cmd),
     :command_opts=>cmd_opts,
     :targets=>opts}
+end
+
+def class_for_command cmd
+  case cmd
+    when 'add'
+    Jam::AddCommand
+    when 'init'
+    Jam::InitCommand
+    when 'find'
+    Jam::FindCommand
+    when 'list'
+    Jam::ListCommand
+    when 'tag'
+    Jam::TagCommand
+  else
+    raise "Unrecognized command #{cmd}"
+  end
 end

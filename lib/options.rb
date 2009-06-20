@@ -35,6 +35,9 @@ def parse_options opts=ARGV
   when "list"
     cmd_opts=Trollop::options(opts)
 
+  when "find"
+    cmd_opts=Trollop::options(opts)
+
   else
     Trollop::die "unknown/unimplemented subcommand #{cmd}"
   end

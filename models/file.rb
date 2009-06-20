@@ -62,6 +62,20 @@ class Jam::File < Sequel::Model(Jam::connection[:files])
     self.tags_dataset.filter(:name=>name).first
   end
 
+  # Returns a string containing the tags for this file, neatly formatted
+  def describe_tags indent=1
+    strs=[]
+    tags.each do |name, params|
+      if params[:note]
+        strs << ("\t"*indent)+"#{name} = #{params[:note]}"
+      else
+        strs << ("\t"*indent)+"#{name}"
+      end
+    end
+
+    strs
+  end
+
   private
 
   def add_agent_name old_list, new_name

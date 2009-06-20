@@ -9,13 +9,7 @@ class Jam::ListCommand < Jam::Command
       file=tgt.file || next
 
       emit rel(tgt.path,'.')
-      file.tags.each do |name, params|
-        if params[:note]
-          emit "\t#{name} = #{params[:note]}"
-        else
-          emit "\t#{name}"
-        end
-      end
+      file.describe_tags.each{|line| emit line}
     end
   end
 

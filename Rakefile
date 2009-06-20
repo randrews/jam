@@ -28,3 +28,12 @@ task :parse do
     file << tree.to_dot
   end
 end
+
+task :gem do
+  `rm -f jam-*.gem`
+  `gem build jam.gemspec`
+end
+
+task :install=>:gem do
+  `gem install --force jam-*.gem`
+end

@@ -5,4 +5,5 @@
 **/.*
 
 # ignore .jam (do not remove this!)
-.jam/**/*
+./.jam/*
+./.jam/**/*

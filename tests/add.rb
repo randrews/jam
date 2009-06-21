@@ -32,4 +32,10 @@ describe "add command" do
     Jam::File.at('dir1/three.txt').should_not be_nil
     Jam::File.at('dir1/dir2/four.txt').should_not be_nil
   end
+
+  it "should not add anything in .jam" do
+    Jam::AddCommand.run @scratch_dir, {}, []
+
+    Jam::File.at('.jam/ignore').should be_nil
+  end
 end

@@ -62,4 +62,15 @@ describe "list command" do
     Jam::ListCommand.emitted[2].should=="\ttag2"
   end
 
+  it "should not list files that aren't added" do
+    `touch #{@scratch_dir}/unadded.txt`
+
+    Jam::ListCommand.run(@scratch_dir, {}, ['unadded.txt'])
+    Jam::ListCommand.emitted.should be_empty
+  end
+
+  it "should not list files that don't exist" do
+    Jam::ListCommand.run(@scratch_dir, {}, ['uncreated.txt'])
+    Jam::ListCommand.emitted.should be_empty
+  end
 end

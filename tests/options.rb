@@ -21,12 +21,16 @@ describe "options parser" do
   it "should recognize params on tag" do
     opts=parse_options(["tag", "-n", "foo"])
     opts[:command].should=='tag'
-    opts[:command_opts][:note]=='foo'
+    opts[:command_opts][:note].should =='foo'
 
     parse_options(["tag"])[:note].should be_nil
     
     opts2=parse_options(["tag", 'foo', '1', '2'])
     opts2[:targets].should==%w{foo 1 2}
+
+    opts3=parse_options(["tag", 'foo', '-n', 'val', '1', '2'])
+    opts3[:targets].should==%w{foo 1 2}
+    opts3[:command_opts][:note].should == 'val'
   end
 
   it "should recognize delete flag on tag" do

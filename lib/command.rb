@@ -1,4 +1,3 @@
-require(File.dirname(__FILE__)+"/ignores_file.rb")
 require(File.dirname(__FILE__)+"/spider.rb")
 require(File.dirname(__FILE__)+"/dotjam.rb")
 require(File.dirname(__FILE__)+"/pathutil.rb")

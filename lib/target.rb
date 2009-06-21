@@ -31,8 +31,10 @@ class Jam::Target
     end
   end
 
-  def self.ignores_filename
-    dotjam('ignore')
+  def self.ignores_filenames
+    [ dotjam('ignore'),
+      dotjam('views'),
+      dotjam('user_ignores') ]
   end
 
   ########################################

@@ -3,14 +3,20 @@ module Jam::IgnoresFile
     @ignores=nil if reload
 
     if @ignores.nil?
-      unless self.respond_to? :ignores_filename
-        raise "ignores_filename method not implemented"
+      unless self.respond_to? :ignores_filenames
+        raise "ignores_filenames method not implemented"
       end
-      File.open ignores_filename do |io|
-        @ignores=[]
-        io.each_line do |line|
-          line=line.strip
-          @ignores << line unless line.empty? or line[0].chr=="#"
+
+      @ignores=[]
+
+      ignores_filenames.each do |ignores_filename|
+        next unless File.readable? ignores_filename
+
+        File.open ignores_filename do |io|
+          io.each_line do |line|
+            line=line.strip
+            @ignores << line unless line.empty? or line[0].chr=="#"
+          end
         end
       end
     end

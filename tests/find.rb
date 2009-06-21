@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
 
-describe "matcher" do
+describe "find command" do
   include Jam::Matcher
 
   before :all do

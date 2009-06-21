@@ -1,6 +1,6 @@
 module Jam
 #   SUB_COMMANDS=%w{add agent find init mv refresh report rm tag}
-  SUB_COMMANDS=%w{add init tag list find}
+  SUB_COMMANDS=%w{add init ignore tag list find}
 end
 
 def parse_options opts=ARGV
@@ -38,6 +38,9 @@ def parse_options opts=ARGV
   when "find"
     cmd_opts=Trollop::options(opts)
 
+  when "ignore"
+    cmd_opts=Trollop::options(opts)
+
   else
     Trollop::die "unknown/unimplemented subcommand #{cmd}"
   end
@@ -55,6 +58,8 @@ def class_for_command cmd
     Jam::AddCommand
     when 'init'
     Jam::InitCommand
+    when 'ignore'
+    Jam::IgnoreCommand
     when 'find'
     Jam::FindCommand
     when 'list'

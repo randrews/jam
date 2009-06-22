@@ -39,7 +39,10 @@ def parse_options opts=ARGV
     cmd_opts=Trollop::options(opts)
 
   when "ignore"
-    cmd_opts=Trollop::options(opts)
+    cmd_opts=Trollop::options(opts) do
+      opt :delete, "Delete the ignore instead of adding it", :default=>false, :short=>'d'
+      opt :all, "List all ignores, not just user-added", :default=>false, :short=>'a'
+    end
 
   else
     Trollop::die "unknown/unimplemented subcommand #{cmd}"

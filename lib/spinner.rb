@@ -1,5 +1,5 @@
 module Jam::Spinner
-  def spinner total=nil, message="Working...", &step
+  def with_spinner total=nil, message="Working...", &step
     current=0
     shown=buildstr(message,current,total)
     printf(shown)
@@ -18,10 +18,10 @@ module Jam::Spinner
     clear(shown)
   end
 
-  def spinner_test max=100
+  def spinner_test
     spinner max do |spin|
       (1..max).each do |n|
-        spin.call
+        spin.call 100
         sleep 0.05
       end
     end

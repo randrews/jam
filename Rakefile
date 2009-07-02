@@ -16,7 +16,7 @@ end
 
 task :parse do
   query=ENV['QUERY'] or 
-    die "No query specified: try 'rake parse QUERY=\"whatever\"'"
+    raise "No query specified: try 'rake parse QUERY=\"whatever\"'"
   filename=ENV['FILENAME'] || 'parse.dot'
 
   require File.join(File.dirname(__FILE__),'jam.rb')

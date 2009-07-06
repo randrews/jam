@@ -58,4 +58,11 @@ describe "options parser" do
   it "should bail if there's more than one matched command" do
     lambda{ parse_options(["i"]) }.should raise_error
   end
+
+  it "should recognize a complete command even if there's another command that starts with that" do
+    Jam.command_names["addstuff"]=:placeholder
+    opts=parse_options(["add"])
+    opts[:command].should=="add"    
+    Jam.command_names.delete "addstuff"
+  end
 end

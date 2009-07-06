@@ -4,9 +4,11 @@ module Jam::ShortCommands
   end
 
   def short_for cmd_start, all_commands=Jam.command_names.keys
+    return cmd_start if all_commands.index(cmd_start)
+
     cmd_poss=possibilities(cmd_start, all_commands)
     if cmd_poss.length > 1
-      raise "Unknown command \"#{cmd_start}\". Did you mean one of these?\n\t"+cmd_poss.join("\n\t")
+      raise "\"#{cmd_start}\" is ambiguous. Which did you mean:\n\t"+cmd_poss.join("\n\t")
     elsif cmd_poss.empty?
       raise "Unknown command \"#{cmd_start}\"."
     else

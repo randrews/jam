@@ -44,6 +44,18 @@ describe "options parser" do
   it "should recognize the query on find" do
     opts=parse_options(["find", "a=3 or c"])
     opts[:targets].shift.should=="a=3 or c"
+  end
 
+  it "should recognize short commands" do
+    opts=parse_options(["ignor"])
+    opts[:command].should=="ignore"
+  end
+
+  it "should bail on unknown commands" do
+    lambda{ parse_options(["kwyjibo"]) }.should raise_error
+  end
+
+  it "should bail if there's more than one matched command" do
+    lambda{ parse_options(["i"]) }.should raise_error
   end
 end

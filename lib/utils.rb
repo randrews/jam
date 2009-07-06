@@ -31,17 +31,20 @@ def prep_test_tree scratch_dir, tree_name
   `cp -R #{Jam::JAM_DIR}/tests/fixtures/#{tree_name}/ #{scratch_dir}`
 end
 
-class Symbol
-  def to_proc
-    Proc.new do |tgt|
-      tgt.send(self.to_s)
-    end
-  end
-end
-
 def create_fake_logger
   logger = Logger.new(STDOUT)
   logger.level = Logger::ERROR
   logger.formatter = Dhaka::ParserLogOutputFormatter.new
   logger
+end
+
+module Jam
+  def self.command_names
+    @command_names ||= {}
+  end
+
+  def self.register_command filename
+    name=File.basename(filename,'.rb')
+    command_names[name]=filename
+  end
 end

@@ -1,5 +1,13 @@
 class Jam::TagCommand < Jam::Command
 
+  def self.parse_options opts
+    cmd_opts=Trollop::options(opts) do
+      opt :note, "The value to apply to the file for this tag", :short=>'n', :type=>String
+      opt :agent, "The agent name to use when applying this tag", :short=>'a'
+      opt :delete, "Delete the tag instead of applying it", :default=>false, :short=>'d'
+    end
+  end
+
   def run
     connect_to_db
 

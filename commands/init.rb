@@ -1,5 +1,11 @@
 class Jam::InitCommand < Jam::Command
 
+  def self.parse_options opts
+    cmd_opts=Trollop::options(opts) do
+      opt :force, "Overwrite .jam if it exists", :default=>false, :short=>'f'
+    end
+  end
+
   def run
     create_dotjam
     create_db

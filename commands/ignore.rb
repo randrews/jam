@@ -1,6 +1,13 @@
 class Jam::IgnoreCommand < Jam::Command
   include Jam::IgnoresFile
 
+  def parse_options opts
+    cmd_opts=Trollop::options(opts) do
+      opt :delete, "Delete the ignore instead of adding it", :default=>false, :short=>'d'
+      opt :all, "List all ignores, not just user-added", :default=>false, :short=>'a'
+    end
+  end
+
   def command_opts
     opts[:command_opts] || {}
   end

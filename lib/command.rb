@@ -27,6 +27,11 @@ class Jam::Command
     raise NotImplementedException
   end
 
+  # Should return the opts and targets, ready to pass to initialize
+  def self.parse_options opts
+    Trollop::options(opts)
+  end
+
   def to_targets target_paths, spin_msg=nil, &blk
     if spin_msg
       with_spinner target_count(target_paths), spin_msg do |spin|

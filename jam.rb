@@ -6,6 +6,7 @@ require 'pathname'
 require 'trollop'
 require 'sequel'
 require 'dhaka'
+require 'activesupport'
 
 require 'ruby-debug' rescue nil
 require 'ruby-prof' rescue nil

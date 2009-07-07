@@ -8,6 +8,12 @@ task :clean do
   files.each do |tmp|
     FileUtils.rm tmp
   end
+
+  puts "Removing .dot files"
+  `rm -f *.dot`
+
+  puts "Removing built gem"
+  `rm -f jam-*.gem`
 end
 
 task :test do

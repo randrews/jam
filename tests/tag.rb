@@ -6,14 +6,29 @@ describe "tag command" do
     prep_test_tree @scratch_dir, 'simple_dir'
     Jam::InitCommand.run(@scratch_dir)
     Jam::AddCommand.run(@scratch_dir)
+
+    class Jam::TagCommand
+      def emit str
+        self.class.class_eval do
+          @emitted ||= []
+          @emitted << str
+        end
+      end
+      def self.emitted ; @emitted ; end
+      def self.clear_emitted ; @emitted=[] ; end
+    end
   end
 
-  after :all do
-    remove_test_scratch_dir @scratch_dir
+  before :each do
+    Jam::TagCommand.clear_emitted
   end
 
   after :each do
     Jam.connection << 'delete from files_tags'
+  end
+
+  after :all do
+    remove_test_scratch_dir @scratch_dir
   end
 
   it "should tag a single file" do
@@ -73,5 +88,15 @@ describe "tag command" do
                         %w{tag1 one.txt})
 
     Jam::File.at('one.txt').has_tag?('tag1').should be_false
+  end
+
+  it "should list tags when run with no targets" do
+    Jam::TagCommand.run(@scratch_dir, {}, ["tag1","one.txt"])
+    Jam::TagCommand.run(@scratch_dir, {}, ["tag2","dir1"])
+    Jam::TagCommand.run(@scratch_dir, {}, [])
+    
+    Jam::TagCommand.emitted[0].should=="1\ttag1"
+    Jam::TagCommand.emitted[1].should=="2\ttag2"
+    Jam::TagCommand.emitted.size.should==2
   end
 end

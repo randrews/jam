@@ -41,6 +41,5 @@ class Jam::InitCommand < Jam::Command
   def copy_defaults
     src=File.join(Jam::JAM_DIR,'res','defaults','.')
     FileUtils.cp_r(src, dotjam)
-    FileUtils.mkdir(dotjam('agents')) unless File.exists? dotjam('agents')
   end
 end

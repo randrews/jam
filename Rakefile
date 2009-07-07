@@ -11,7 +11,7 @@ task :clean do
 end
 
 task :test do
-  exec "spec tests/*.rb"
+  exec "spec --color tests/*.rb"
 end
 
 task :parse do

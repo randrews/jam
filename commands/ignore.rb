@@ -51,8 +51,4 @@ class Jam::IgnoreCommand < Jam::Command
       end
     end
   end
-
-  def emit str
-    puts str
-  end
 end

@@ -2,19 +2,6 @@ require "#{File.dirname(__FILE__)}/../jam.rb"
 Jam::environment=:test
 
 describe "ignore command" do
-  before :all do
-    class Jam::IgnoreCommand
-      def emit str
-        self.class.class_eval do
-          @emitted ||= []
-          @emitted << str
-        end
-      end
-      def self.emitted ; @emitted ; end
-      def self.clear_emitted ; @emitted=[] ; end
-    end
-  end
-
   before :each do
     @scratch_dir=verify_test_scratch_dir
     prep_test_tree @scratch_dir, 'simple_dir'

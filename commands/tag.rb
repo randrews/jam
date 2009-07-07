@@ -40,8 +40,4 @@ class Jam::TagCommand < Jam::Command
       end
     end
   end
-
-  def emit str
-    puts str
-  end
 end

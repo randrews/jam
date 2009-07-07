@@ -16,17 +16,6 @@ describe "list command" do
  
     Jam::TagCommand.run(@scratch_dir,{:command_opts=>{:note=>'foo'}}, 
                         ["tag3","two.txt"])
-
-    class Jam::ListCommand
-      def emit str
-        self.class.class_eval do
-          @emitted ||= []
-          @emitted << str
-        end
-      end
-      def self.emitted ; @emitted ; end
-      def self.clear_emitted ; @emitted=[] ; end
-    end
   end
 
   after :all do

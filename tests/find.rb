@@ -15,17 +15,6 @@ describe "find command" do
     Jam::File.at('one.txt').tag('tag3')
 
     Jam::File.at('two.txt').tag('tag2','foo')
-
-    class Jam::FindCommand
-      def emit str
-        self.class.class_eval do
-          @emitted ||= []
-          @emitted << str
-        end
-      end
-      def self.emitted ; @emitted ; end
-      def self.clear_emitted ; @emitted=[] ; end
-    end
   end
 
   before :each do

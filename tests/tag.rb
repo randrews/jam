@@ -7,17 +7,6 @@ describe "tag command" do
     prep_test_tree @scratch_dir, 'simple_dir'
     Jam::InitCommand.run(@scratch_dir)
     Jam::AddCommand.run(@scratch_dir)
-
-    class Jam::TagCommand
-      def emit str
-        self.class.class_eval do
-          @emitted ||= []
-          @emitted << str
-        end
-      end
-      def self.emitted ; @emitted ; end
-      def self.clear_emitted ; @emitted=[] ; end
-    end
   end
 
   before :each do

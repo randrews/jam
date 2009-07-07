@@ -13,9 +13,4 @@ class Jam::FindCommand < Jam::Command
       file.describe_tags.each{|line| emit line}
     end
   end
-
-  # Gets monkeypatched by tests
-  def emit str
-    puts str
-  end
 end

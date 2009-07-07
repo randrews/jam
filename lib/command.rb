@@ -2,6 +2,7 @@ require(File.dirname(__FILE__)+"/spider.rb")
 require(File.dirname(__FILE__)+"/dotjam.rb")
 require(File.dirname(__FILE__)+"/pathutil.rb")
 require(File.dirname(__FILE__)+"/spinner.rb")
+require(File.dirname(__FILE__)+"/emit.rb")
 
 class Jam::Command
   attr_reader :pwd
@@ -10,6 +11,7 @@ class Jam::Command
   include Jam::Dotjam
   include Jam::Pathutil
   include Jam::Spinner
+  extend Jam::Emit
 
   def initialize pwd, opts={}, targets=[]
     @pwd=File.expand_path(pwd);@opts=opts;@targets=targets

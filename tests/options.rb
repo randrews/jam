@@ -1,4 +1,5 @@
 require 'rubygems'
+Jam::environment=:test
 
 DIR=File.dirname(__FILE__)
 require "#{DIR}/../jam.rb"

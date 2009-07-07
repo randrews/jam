@@ -33,7 +33,7 @@ class Jam::Command
   end
 
   def to_targets target_paths, spin_msg=nil, &blk
-    if spin_msg
+    if spin_msg and Jam::environment!=:test
       with_spinner target_count(target_paths), spin_msg do |spin|
         find_targets(target_paths).each do |tgt|
           yield tgt.relroot, tgt

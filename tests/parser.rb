@@ -1,4 +1,5 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
+Jam::environment=:test
 
 describe "query language parser" do
   def tree str

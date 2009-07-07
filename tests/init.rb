@@ -1,4 +1,5 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
+Jam::environment=:test
 
 describe "init command (empty dir)" do
   before :each do

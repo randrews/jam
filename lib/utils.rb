@@ -47,4 +47,12 @@ module Jam
     name=File.basename(filename,'.rb')
     command_names[name]=filename
   end
+
+  def self.environment
+    @environment ||= :production
+  end
+
+  def self.environment= env
+    @environment = env || :production
+  end
 end

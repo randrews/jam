@@ -4,4 +4,13 @@ JAM_DIR=File.dirname(__FILE__)
 require "#{JAM_DIR}/../jam.rb"
 
 opts=parse_options
+
+RubyProf.start if opts[:global_opts][:profile]
+
 opts[:command_class].run '.', opts, opts[:targets]
+
+if opts[:global_opts][:profile]
+  result = RubyProf.stop
+  printer = RubyProf::FlatPrinter.new(result)
+  printer.print(STDOUT, 0)
+end

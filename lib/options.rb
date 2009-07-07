@@ -11,6 +11,7 @@ def parse_options opts=ARGV
     # TODO stop_on_unknown will let us implement
     # gem's any-unique-substring for subcommands 
     stop_on Jam::SUB_COMMANDS
+    opt :profile, "Profile the command while it runs, displays timing data at the end.", :short=>'p', :default=>false
   end
 
   cmd=opts.shift

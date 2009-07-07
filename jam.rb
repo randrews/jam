@@ -8,6 +8,7 @@ require 'sequel'
 require 'dhaka'
 
 require 'ruby-debug' rescue nil
+require 'ruby-prof' rescue nil
 
 module Jam
   JAM_VERSION="0.0.1" unless const_defined? "JAM_VERSION"

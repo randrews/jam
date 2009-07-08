@@ -1,8 +1,6 @@
 class Jam::AddCommand < Jam::Command
 
   def run
-    start=Time.now
-
     connect_to_db
 
     t=targets
@@ -30,8 +28,7 @@ class Jam::AddCommand < Jam::Command
 
     @threads.each &:join
 
-    duration=Time.now-start
-    emit("Added #{count} files in #{duration} seconds")
+    emit("Added #{count} files in #{runtime} seconds")
   end
 
   private

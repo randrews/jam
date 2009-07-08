@@ -83,6 +83,8 @@ describe "tag command" do
   it "should list tags when run with no targets" do
     Jam::TagCommand.run(@scratch_dir, {}, ["tag1","one.txt"])
     Jam::TagCommand.run(@scratch_dir, {}, ["tag2","dir1"])
+
+    Jam::TagCommand.clear_emitted
     Jam::TagCommand.run(@scratch_dir, {}, [])
     
     Jam::TagCommand.emitted[0].should=="1\ttag1"

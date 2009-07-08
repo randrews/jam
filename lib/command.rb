@@ -21,7 +21,7 @@ class Jam::Command
     # This has no effect except in test, since it's
     # assumed that pwd is the real pwd.
     FileUtils.cd pwd do
-      new(pwd, opts, targets).run
+      new(pwd, opts, targets).start_runtime.run
     end
   end
 
@@ -35,8 +35,10 @@ class Jam::Command
   end
 
   def to_targets target_paths, spin_msg=nil, &blk
+    count=target_count(target_paths)
+
     if spin_msg and Jam::environment!=:test
-      with_spinner target_count(target_paths), spin_msg do |spin|
+      with_spinner count, spin_msg do |spin|
         find_targets(target_paths).each do |tgt|
           yield tgt.relroot, tgt
           spin.call
@@ -47,10 +49,17 @@ class Jam::Command
         yield tgt.relroot, tgt
       end
     end
+
+    count
   end
 
   def target_count target_paths
     find_targets(target_paths).length
+  end
+
+  def start_runtime
+    @start_time = Time.now
+    self
   end
 
   protected
@@ -68,5 +77,9 @@ class Jam::Command
 
   def connect_to_db
     Jam.connection=establish_connection(dotjam('jam.sqlite3'))
+  end
+
+  def runtime
+    Time.now - @start_time rescue 0
   end
 end

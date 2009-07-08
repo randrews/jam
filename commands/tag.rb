@@ -11,31 +11,20 @@ class Jam::TagCommand < Jam::Command
   def run
     connect_to_db
 
-    if targets.empty? # Just list the tags
-      tag_counts={}
-      Jam::Tag.all.each do |tag|
-        tag_counts[tag.name] = Jam::connection[:files_tags].filter(:tag_id=>tag.id).count
-      end
-
-      tag_counts.keys.sort.each do |tagname|
-        emit "#{tag_counts[tagname]}\t#{tagname}"
-      end
-    elsif (opts[:command_opts][:delete] rescue nil) # De-tag files
-      tagname=targets.shift
-
-      tag=Jam::Tag.find :name=>tagname
-      raise "Tag #{tagname} not found" if tag.nil?
-
-      to_targets targets, "Detagging files..." do |path, tgt|
-        Jam::File.at(path).remove_tag tag
-      end
-    else # Tag files
+    if targets.empty?
+      list_tags
+    else
       (tagname, note) = parse_tagname(targets.shift)
-      agent=opts[:command_opts][:agent] rescue nil
-
-      to_targets targets, "Tagging files..." do |path, tgt|
-        Jam::File.at(path).tag(tagname,note,agent)
+      
+      if (opts[:command_opts][:delete] rescue nil)
+        count = detag_files(targets, tagname)
+        operation = "Detagged"
+      else
+        count = tag_files(targets, tagname, note)
+        operation = "Tagged"
       end
+
+      emit("#{operation} #{count} files in #{runtime} seconds")
     end
   end
 
@@ -45,6 +34,36 @@ class Jam::TagCommand < Jam::Command
     else
       note=opts[:command_opts][:note] rescue nil
       [tagname, note]
+    end
+  end
+
+  private
+
+  def detag_files targets, tagname
+    tag=Jam::Tag.find :name=>tagname
+    raise "Tag #{tagname} not found" if tag.nil?
+
+    to_targets targets, "Detagging files..." do |path, tgt|
+      Jam::File.at(path).remove_tag tag
+    end
+  end
+
+  def tag_files targets, tagname, note
+    agent=opts[:command_opts][:agent] rescue nil
+
+    to_targets targets, "Tagging files..." do |path, tgt|
+      Jam::File.at(path).tag(tagname,note,agent)
+    end
+  end
+
+  def list_tags
+    tag_counts={}
+    Jam::Tag.all.each do |tag|
+      tag_counts[tag.name] = Jam::connection[:files_tags].filter(:tag_id=>tag.id).count
+    end
+
+    tag_counts.keys.sort.each do |tagname|
+      emit "#{tag_counts[tagname]}\t#{tagname}"
     end
   end
 end

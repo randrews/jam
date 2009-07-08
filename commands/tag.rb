@@ -30,14 +30,21 @@ class Jam::TagCommand < Jam::Command
         Jam::File.at(path).remove_tag tag
       end
     else # Tag files
-      tagname=targets.shift
-
-      note=opts[:command_opts][:note] rescue nil
+      (tagname, note) = parse_tagname(targets.shift)
       agent=opts[:command_opts][:agent] rescue nil
 
       to_targets targets, "Tagging files..." do |path, tgt|
         Jam::File.at(path).tag(tagname,note,agent)
       end
+    end
+  end
+
+  def parse_tagname tagname
+    if tagname =~ /(.*)=(.*)/
+      [$1, $2]
+    else
+      note=opts[:command_opts][:note] rescue nil
+      [tagname, note]
     end
   end
 end

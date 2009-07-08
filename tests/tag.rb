@@ -89,4 +89,15 @@ describe "tag command" do
     Jam::TagCommand.emitted[1].should=="2\ttag2"
     Jam::TagCommand.emitted.size.should==2
   end
+
+  it "should accept a=b style tags" do
+    Jam::TagCommand.run(@scratch_dir, {}, ["tag1=1","one.txt"])
+    Jam::TagCommand.run(@scratch_dir, {}, ["tag2=foo bar","dir1"])
+    
+    Jam::File.at('one.txt').has_tag?('tag1').should be_true
+    Jam::File.at('dir1/three.txt').has_tag?('tag2').should be_true
+
+    Jam::File.at('one.txt').tags['tag1'][:note].should=='1'
+    Jam::File.at('dir1/three.txt').tags['tag2'][:note].should=='foo bar'
+  end  
 end

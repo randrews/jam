@@ -42,10 +42,14 @@ class Jam::TagCommand < Jam::Command
   def detag_files targets, tagname
     tag=Jam::Tag.find :name=>tagname
     raise "Tag #{tagname} not found" if tag.nil?
+    fast_tagger=Jam::FastTagger.new tagname
 
-    to_targets targets, "Detagging files..." do |path, tgt|
-      Jam::File.at(path).remove_tag tag
+    count=to_targets targets, "Detagging files..." do |path, tgt|
+      fast_tagger.add_detagging_operation path
     end
+
+    fast_tagger.wait_for_finish
+    count
   end
 
   def tag_files targets, tagname, note

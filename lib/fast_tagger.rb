@@ -3,7 +3,7 @@ class Jam::FastTagger
   MAX_BLOCK_SIZE=1000
   SEPARATE_THREADS=true
 
-  def initialize tagname, note, agent
+  def initialize tagname, note="", agent=""
     self.tagname=tagname
     self.note=note
     self.agent=agent
@@ -14,7 +14,9 @@ class Jam::FastTagger
 
     # if currently tagged
     if current_tagged_ids.include?(file_id)
-      ids_to_update << Jam::connection[:files_tags].filter(:file_id=>file_id, :tag_id=>tag_object.id).select(:id).first[:id]
+      ids_to_update << Jam::connection[:files_tags].
+        filter(:file_id=>file_id, :tag_id=>tag_object.id).
+        select(:id).first[:id]
       flush_updates if ids_to_update.size >= MAX_BLOCK_SIZE
     else # Not currently tagged, create a new files_tags
       file_ids_to_create << file_id
@@ -22,9 +24,21 @@ class Jam::FastTagger
     end
   end
 
+  def add_detagging_operation path
+    file_id=Jam::connection[:files].filter(:path=>path).select(:id).first[:id]
+
+    if current_tagged_ids.include?(file_id)
+      ids_to_delete << Jam::connection[:files_tags].
+        filter(:file_id=>file_id, :tag_id=>tag_object.id).
+        select(:id).first[:id]
+      flush_deletes if ids_to_delete.size >= MAX_BLOCK_SIZE
+    end
+  end
+
   def wait_for_finish
     flush_updates
     flush_creates
+    flush_deletes
 
     threads.each &:join
   end
@@ -52,7 +66,21 @@ class Jam::FastTagger
     end
     @file_ids_to_create=[]
   end
-  
+
+  def flush_deletes
+    ids=ids_to_delete
+    if SEPARATE_THREADS
+      threads << Thread.new{ delete_files_tags ids }
+    else
+      delete_files_tags ids
+    end
+    @ids_to_delete=[]
+  end
+
+  def delete_files_tags ids
+    Jam::connection[:files_tags].filter(:id=>ids).delete
+  end
+
   def create_files_tags file_ids_to_create
     tag_id=tag_object.id
     data=file_ids_to_create.map{|file_id|
@@ -100,6 +128,10 @@ class Jam::FastTagger
 
   def file_ids_to_create
     @file_ids_to_create ||= []
+  end
+
+  def ids_to_delete
+    @ids_to_delete ||= []
   end
 
 end

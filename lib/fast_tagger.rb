@@ -1,7 +1,9 @@
+require File.join(Jam::JAM_DIR,"lib","utils.rb")
+
 class Jam::FastTagger
   attr_accessor :tagname, :note, :agent
   MAX_BLOCK_SIZE=1000
-  SEPARATE_THREADS=true
+  SEPARATE_THREADS=false
 
   def initialize tagname, note="", agent=""
     self.tagname=tagname
@@ -54,7 +56,7 @@ class Jam::FastTagger
     else
       update_files_tags ids
     end
-    @ids_to_update=[]
+    clear_ids_to_update
   end
 
   def flush_creates
@@ -64,7 +66,7 @@ class Jam::FastTagger
     else
       create_files_tags ids
     end
-    @file_ids_to_create=[]
+    clear_file_ids_to_create
   end
 
   def flush_deletes
@@ -74,7 +76,7 @@ class Jam::FastTagger
     else
       delete_files_tags ids
     end
-    @ids_to_delete=[]
+    clear_ids_to_delete
   end
 
   def delete_files_tags ids
@@ -103,35 +105,20 @@ class Jam::FastTagger
              :updated_at=>Time.now)
   end
 
-  def current_tagged_files
-    unless @current_tagged_files
-      tag=tag_object
-      @current_tagged_files = 
-        Jam::connection[:files].select(:path, :file_id=>:id).
-        join(:files_tags, :file_id=>:id).
-        filter(:tag_id=>tag.id).all
-    end
-    @current_tagged_files
+  cached :current_tagged_files do
+    Jam::connection[:files].select(:path, :file_id=>:id).
+      join(:files_tags, :file_id=>:id).
+      filter(:tag_id=>tag_object.id).all
   end
 
-  def current_tagged_ids
-    @current_tagged_ids ||= current_tagged_files.map{|r| r[:id]}.to_set
+  cached :current_tagged_ids do
+    current_tagged_files.map{|r| r[:id]}.to_set
   end
 
-  def tag_object
-    @tag_object ||= Jam::Tag.find_or_create(:name=>tagname)
+  cached :tag_object do
+    Jam::Tag.find_or_create(:name=>tagname)
   end
 
-  def ids_to_update
-    @ids_to_update ||= []
-  end
-
-  def file_ids_to_create
-    @file_ids_to_create ||= []
-  end
-
-  def ids_to_delete
-    @ids_to_delete ||= []
-  end
+  array :ids_to_update, :file_ids_to_create, :ids_to_delete
 
 end

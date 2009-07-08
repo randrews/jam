@@ -1,14 +1,14 @@
+require File.join(Jam::JAM_DIR,"lib","class_utilities.rb")
+
 module Jam::Emit
 
-  def emitted ; @emitted ; end
-  def clear_emitted ; @emitted=[] ; end
+  array :emitted
 
   def self.extended base
     base.send :define_method, :emit do |str|
       if Jam::environment==:test
         self.class.class_eval do
-          @emitted ||= []
-          @emitted << str
+          emitted << str
         end
       else
         puts str

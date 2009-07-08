@@ -1,4 +1,4 @@
-require File.join(Jam::JAM_DIR,"lib","utils.rb")
+require File.join(Jam::JAM_DIR,"lib","class_utilities.rb")
 
 class Jam::FastTagger
   attr_accessor :tagname, :note, :agent
@@ -42,42 +42,62 @@ class Jam::FastTagger
     flush_creates
     flush_deletes
 
-    threads.each &:join
+    threads.each &:join if SEPARATE_THREADS
   end
 
   private
 
-  def threads ; @threads ||= [] ; end
+  ##################################################
+  ### Support functions and buffers ################
+  ##################################################
+
+  array :ids_to_update, :file_ids_to_create, :ids_to_delete, :threads
+
+  cached :current_tagged_files do
+    Jam::connection[:files].select(:path, :file_id=>:id).
+      join(:files_tags, :file_id=>:id).
+      filter(:tag_id=>tag_object.id).all
+  end
+
+  cached :current_tagged_ids do
+    current_tagged_files.map{|r| r[:id]}.to_set
+  end
+
+  cached :tag_object do
+    Jam::Tag.find_or_create(:name=>tagname)
+  end
+
+  ##################################################
+  ### Flush buffer functions #######################
+  ##################################################
+  # Called when any buffer reaches 1000 rows
+
+  def flush_buffer msg, buffer
+    ids=self.send buffer
+    if SEPARATE_THREADS
+      threads << Thread.new { self.send msg, ids }
+    else
+      self.send msg, ids
+    end
+    self.send "clear_#{buffer}"
+  end
 
   def flush_updates
-    ids=ids_to_update
-    if SEPARATE_THREADS
-      threads << Thread.new{ update_files_tags ids }
-    else
-      update_files_tags ids
-    end
-    clear_ids_to_update
+    flush_buffer :update_files_tags, :ids_to_update
   end
 
   def flush_creates
-    ids=file_ids_to_create
-    if SEPARATE_THREADS
-      threads << Thread.new{ create_files_tags ids }
-    else
-      create_files_tags ids
-    end
-    clear_file_ids_to_create
+    flush_buffer :create_files_tags, :file_ids_to_create
   end
 
   def flush_deletes
-    ids=ids_to_delete
-    if SEPARATE_THREADS
-      threads << Thread.new{ delete_files_tags ids }
-    else
-      delete_files_tags ids
-    end
-    clear_ids_to_delete
+    flush_buffer :delete_files_tags, :ids_to_delete
   end
+
+  ##################################################
+  ### Actually CRUD rows ###########################
+  ##################################################
+  # Actually does DB operations
 
   def delete_files_tags ids
     Jam::connection[:files_tags].filter(:id=>ids).delete
@@ -104,21 +124,5 @@ class Jam::FastTagger
              :tagged_by=>agent,
              :updated_at=>Time.now)
   end
-
-  cached :current_tagged_files do
-    Jam::connection[:files].select(:path, :file_id=>:id).
-      join(:files_tags, :file_id=>:id).
-      filter(:tag_id=>tag_object.id).all
-  end
-
-  cached :current_tagged_ids do
-    current_tagged_files.map{|r| r[:id]}.to_set
-  end
-
-  cached :tag_object do
-    Jam::Tag.find_or_create(:name=>tagname)
-  end
-
-  array :ids_to_update, :file_ids_to_create, :ids_to_delete
 
 end

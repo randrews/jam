@@ -10,6 +10,7 @@ class Jam::InitCommand < Jam::Command
     create_dotjam
     create_db
     copy_defaults
+    emit "Empty Jam repository created in .jam"
   end
 
   private

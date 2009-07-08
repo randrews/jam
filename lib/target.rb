@@ -40,8 +40,8 @@ class Jam::Target
   ########################################
 
   # The root of the repository containing this file
-  def root
-    @root ||= Jam::Target.root(File.dirname(path))
+  cached :root do
+    Jam::Target.root(File.dirname(path))
   end
 
   # The path of this file relative to the root.

@@ -1,8 +1,8 @@
 module ClassUtilities
   def cached name, &blk
     varname="@#{name}"
-    define_method name do
-      unless instance_variable_get varname
+    define_method name do |*reload|
+      unless instance_variable_get varname and !reload
         instance_variable_set varname, instance_eval(&blk)
       end
       instance_variable_get varname

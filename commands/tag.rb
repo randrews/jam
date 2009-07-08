@@ -50,10 +50,14 @@ class Jam::TagCommand < Jam::Command
 
   def tag_files targets, tagname, note
     agent=opts[:command_opts][:agent] rescue nil
+    fast_tagger=Jam::FastTagger.new tagname, note, agent
 
-    to_targets targets, "Tagging files..." do |path, tgt|
-      Jam::File.at(path).tag(tagname,note,agent)
+    count=to_targets targets, "Tagging files..." do |path, tgt|
+      fast_tagger.add_tagging_operation path
     end
+
+    fast_tagger.wait_for_finish
+    count
   end
 
   def list_tags

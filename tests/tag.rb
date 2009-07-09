@@ -40,6 +40,15 @@ describe "tag command" do
     Jam::File.at('dir1/dir2/four.txt').has_tag?('tag1').should be_true
   end
 
+  it "should tag from a subdirectory" do 
+    Jam::TagCommand.run(@scratch_dir+"/dir1", 
+                        {}, 
+                        ["tag1","three.txt"])
+
+    Jam::File.at('dir1/three.txt').has_tag?('tag1').should be_true
+    Jam::File.at('dir1/dir2/four.txt').has_tag?('tag1').should be_false
+  end
+
   it "should apply notes for tags" do
     Jam::TagCommand.run(@scratch_dir,
                         {:command_opts=>{:note=>'foo'}},

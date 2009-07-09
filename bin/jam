@@ -11,6 +11,6 @@ opts[:command_class].run '.', opts, opts[:targets]
 
 if opts[:global_opts][:profile]
   result = RubyProf.stop
-  printer = RubyProf::CallTreePrinter.new(result)
+  printer = RubyProf::FlatPrinter.new(result)
   printer.print(STDOUT, 0)
 end

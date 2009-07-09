@@ -14,7 +14,14 @@ class Jam::AddCommand < Jam::Command
 
     to_targets t, "Adding files..." do |file, tgt|
       unless already_extant.include?(file)
-        current_block << {:path=>file, :created_at=>Time.now, :updated_at=>Time.now}
+        (dirname, filename) = *parse_path(file)
+
+        current_block << {
+          :path=>file,
+          :dirname=>dirname,
+          :filename=>filename,
+          :created_at=>Time.now, 
+          :updated_at=>Time.now}
         count+=1
       end
 
@@ -32,6 +39,13 @@ class Jam::AddCommand < Jam::Command
   end
 
   private
+
+  def parse_path file
+    dirs=file.split("/")
+    filename=dirs.pop
+    dirname=dirs.join("/")
+    [dirname, filename]
+  end
 
   def insert_block block, extant=nil
     extant += block.map{|r| r[:path]} if extant

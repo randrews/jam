@@ -25,6 +25,16 @@ describe "add command" do
     Jam::File.at('dir1/dir2/four.txt').should_not be_nil
   end
 
+  it "should set dirname and filename for all the things it spiders" do
+    Jam::AddCommand.run @scratch_dir
+
+    Jam::File.at('one.txt').dirname.should==""
+    Jam::File.at('one.txt').filename.should=="one.txt"
+
+    Jam::File.at('dir1/dir2/four.txt').dirname.should=="dir1/dir2"
+    Jam::File.at('dir1/dir2/four.txt').filename.should=="four.txt"
+  end
+
   it "should be able to add a subdirectory" do
     Jam::AddCommand.run(@scratch_dir,{},[@scratch_dir+'/dir1'])
 

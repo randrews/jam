@@ -12,7 +12,7 @@ class Jam::AddCommand < Jam::Command
     count=0
     @threads ||= [] # The threads we'll spawn off to stick new files in
 
-    to_targets t, "Adding files..." do |file, tgt|
+    to_filesystem_targets t, "Adding files..." do |file, tgt|
       unless already_extant.include?(file)
         (dirname, filename) = *parse_path(file)
 

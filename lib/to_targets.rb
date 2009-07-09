@@ -3,7 +3,7 @@ require(File.dirname(__FILE__)+"/spinner.rb")
 module Jam::ToTargets
   include Jam::Spinner
 
-  def to_targets target_paths, spin_msg=nil, &blk
+  def to_filesystem_targets target_paths, spin_msg=nil, &blk
     self.target_paths=target_paths
 
     count=target_count
@@ -24,13 +24,14 @@ module Jam::ToTargets
     count
   end
 
-  def to_extant_targets target_paths, spin_msg=nil, &blk
+  def to_targets target_paths, spin_msg=nil, &blk
     paths=[]
     dirnames=[]
     ids=[]
 
     target_paths.each do |path|
-      (File.directory?(path) ? dirnames : paths) << path
+      tgt = Jam::Target.from_path(path,false)[0]
+      (File.directory?(path) ? dirnames : paths) << tgt.relroot if tgt
     end
 
     add_filter(:path=>paths) unless paths.empty?

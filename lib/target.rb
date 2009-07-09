@@ -17,8 +17,8 @@ class Jam::Target
   # If it's a file, it returns an array of that file
   # If it's a directory, it spiders it
   # Any ignored patterns get removed from the array
-  def self.from_path path
-    if File.directory? path
+  def self.from_path path, spider=true
+    if File.directory? path and spider
       files=[]
       spider_directory(path,FileUtils.pwd) do |file|
         files << Jam::Target.new(file)

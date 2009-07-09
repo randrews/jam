@@ -60,7 +60,7 @@ describe "list command" do
   end
 
   it "should not list files that don't exist" do
-    Jam::ListCommand.run(@scratch_dir, {}, ['uncreated.txt'])
+    lambda{Jam::ListCommand.run(@scratch_dir, {}, ['uncreated.txt'])}.should raise_error
     Jam::ListCommand.emitted.should be_empty
   end
 end

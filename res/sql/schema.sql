@@ -1,6 +1,8 @@
 create table files (
        id integer primary key,
-       path text,
+       dirname text,
+       filename text,
+       path text, -- This is File.join(dirname,filename), always. It'll go away eventually.
        created_at datetime,
        updated_at datetime
 );
@@ -23,5 +25,6 @@ create table files_tags (
 );
 
 create index files_path_index on files(path);
+create index files_dirname_index on files(dirname);
 create index files_tags_file_id_index on files_tags(file_id);
 create index files_tags_tag_id_index on files_tags(tag_id);

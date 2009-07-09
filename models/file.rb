@@ -8,6 +8,9 @@ class Jam::File < Sequel::Model(Jam::connection[:files])
   def before_create
     self.created_at=Time.now
     self.updated_at=Time.now
+
+    self.dirname=File.dirname(path) unless dirname
+    self.filename=File.basename(path) unless filename
   end
 
   def before_update

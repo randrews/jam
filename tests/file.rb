@@ -29,6 +29,18 @@ describe "file" do
     file.updated_at.nil?.should==false
   end
 
+  it "should set dirname and filename when you make one" do
+    file=Jam::File.create :path=>'dir1/text.txt'
+    file.dirname.should=="dir1"
+    file.filename.should=="text.txt"
+  end
+
+  it "should not set dirname and filename when they're set explicitly" do
+    file=Jam::File.create :path=>'dir1/text.txt', :dirname=>'foo', :filename=>'bar'
+    file.dirname.should=="foo"
+    file.filename.should=="bar"
+  end
+
   it "should have many tags" do
     @file.tags_dataset.map(:name).should==%w{tag1 tag2}
     @conn[:files_tags].count.should==2

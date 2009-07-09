@@ -1,5 +1,7 @@
 require File.join(Jam::JAM_DIR,"lib","short_commands.rb")
+require File.join(Jam::JAM_DIR,"lib","dotjam.rb")
 include Jam::ShortCommands
+include Jam::Dotjam
 
 def parse_options opts=ARGV
   global_opts = Trollop::options(opts) do
@@ -20,6 +22,12 @@ def parse_options opts=ARGV
     :targets=>opts}
 end
 
-def class_for_command cmd
-  "jam/#{cmd}_command".classify.constantize
+def class_for_command cmd, pwd=FileUtils.pwd
+  begin
+    "jam/#{cmd}_command".classify.constantize
+  rescue NameError
+    dj=find_dotjam(pwd)
+    require File.join(dj,"commands","#{cmd}.rb")
+    "#{cmd}_command".classify.constantize
+  end
 end

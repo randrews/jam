@@ -34,5 +34,4 @@ module Jam::Dotjam
   def root path
     File.dirname(find_dotjam(path))
   end
-
 end

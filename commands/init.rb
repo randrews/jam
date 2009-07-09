@@ -42,5 +42,6 @@ class Jam::InitCommand < Jam::Command
   def copy_defaults
     src=File.join(Jam::JAM_DIR,'res','defaults','.')
     FileUtils.cp_r(src, dotjam)
+    FileUtils.mkdir File.join(dotjam,"commands")
   end
 end

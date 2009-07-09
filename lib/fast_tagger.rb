@@ -12,9 +12,7 @@ class Jam::FastTagger
     init_arrays
   end
 
-  def add_tagging_operation path
-    file_id=Jam::connection[:files].filter(:path=>path).select(:id).first[:id]
-
+  def add_tagging_operation file_id
     # if currently tagged
     if current_tagged_ids.include?(file_id)
       ids_to_update << Jam::connection[:files_tags].
@@ -27,9 +25,7 @@ class Jam::FastTagger
     end
   end
 
-  def add_detagging_operation path
-    file_id=Jam::connection[:files].filter(:path=>path).select(:id).first[:id]
-
+  def add_detagging_operation file_id
     if current_tagged_ids.include?(file_id)
       ids_to_delete << Jam::connection[:files_tags].
         filter(:file_id=>file_id, :tag_id=>tag_object.id).

@@ -24,6 +24,39 @@ module Jam::ToTargets
     count
   end
 
+  def to_extant_targets target_paths, spin_msg=nil, &blk
+    paths=[]
+    dirnames=[]
+    ids=[]
+
+    target_paths.each do |path|
+      (File.directory?(path) ? dirnames : paths) << path
+    end
+
+    add_filter(:path=>paths) unless paths.empty?
+    dirnames.each do |dirname|
+      add_filter(:dirname.like("#{dirname}%"))
+    end
+
+    raise "No valid targets given" unless @filter_expr
+    Jam::connection[:files].filter(@filter_expr).each{|r| ids << r[:id]}
+
+    if spin_msg and Jam::environment!=:test
+      with_spinner ids.size, spin_msg do |spin|
+        ids.each do |id|
+          yield id
+          spin.call
+        end
+      end
+    else
+      ids.each do |id|
+        yield id
+      end
+    end
+
+    ids.size
+  end
+
   private
 
   attr_accessor :target_paths
@@ -41,4 +74,7 @@ module Jam::ToTargets
     targets
   end
 
+  def add_filter expr
+    @filter_expr = (@filter_expr ? (@filter_expr | expr) : expr)
+  end
 end

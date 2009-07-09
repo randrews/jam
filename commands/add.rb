@@ -20,7 +20,7 @@ class Jam::AddCommand < Jam::Command
           :path=>file,
           :dirname=>dirname,
           :filename=>filename,
-          :created_at=>Time.now, 
+          :created_at=>Time.now,
           :updated_at=>Time.now}
         count+=1
       end

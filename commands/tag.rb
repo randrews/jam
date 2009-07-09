@@ -44,8 +44,8 @@ class Jam::TagCommand < Jam::Command
     raise "Tag #{tagname} not found" if tag.nil?
     fast_tagger=Jam::FastTagger.new tagname
 
-    count=to_targets targets, "Detagging files..." do |path, tgt|
-      fast_tagger.add_detagging_operation path
+    count=to_extant_targets targets, "Detagging files..." do |id,tgt|
+      fast_tagger.add_detagging_operation id
     end
 
     fast_tagger.wait_for_finish
@@ -56,8 +56,8 @@ class Jam::TagCommand < Jam::Command
     agent=opts[:command_opts][:agent] rescue nil
     fast_tagger=Jam::FastTagger.new tagname, note, agent
 
-    count=to_targets targets, "Tagging files..." do |path, tgt|
-      fast_tagger.add_tagging_operation path
+    count=to_extant_targets targets, "Tagging files..." do |id,tgt|
+      fast_tagger.add_tagging_operation id
     end
 
     fast_tagger.wait_for_finish

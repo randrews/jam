@@ -6,9 +6,7 @@ class Jam::FindCommand < Jam::Command
 
     raise "No query specified" if targets.empty?
 
-    files=query(targets[0])
-
-    files.each do |id|
+    to_query(targets[0]) do |id|
       file=Jam::File.find(:id=>id)
       emit file.path
       file.describe_tags.each{|line| emit line}

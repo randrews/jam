@@ -1,8 +1,15 @@
 require(File.dirname(__FILE__)+"/spinner.rb")
+require(File.dirname(__FILE__)+"/matcher.rb")
 
 module Jam::ToTargets
   include Jam::Spinner
+  include Jam::Matcher
 
+  ##################################################
+  ### Filesystem targets ###########################
+  ##################################################
+  # Spiders all files that aren't ignored, whether
+  # in the DB or not. The slowest option.
   def to_filesystem_targets target_paths, spin_msg=nil, &blk
     self.target_paths=target_paths
 
@@ -24,24 +31,33 @@ module Jam::ToTargets
     count
   end
 
+  ##################################################
+  ### Targets ######################################
+  ##################################################
+  # Uses SQL to find the files already in the DB
+  # that match the target paths. Much faster.
   def to_targets target_paths, spin_msg=nil, &blk
-    paths=[]
-    dirnames=[]
     ids=[]
+    build_dataset_for(target_paths).each{|r| ids << r[:id]}
 
-    target_paths.each do |path|
-      tgt = Jam::Target.from_path(path,false)[0]
-      (File.directory?(path) ? dirnames : paths) << tgt.relroot if tgt
-    end
+    to_ids ids, spin_msg, &blk
+  end
 
-    add_filter(:path=>paths) unless paths.empty?
-    dirnames.each do |dirname|
-      add_filter(:dirname.like("#{dirname}%"))
-    end
+  ##################################################
+  ### Query ########################################
+  ##################################################
+  # Grinds over anything in the DB that matches the
+  # given query. Very fast.
+  def to_query query_str, spin_msg=nil, &blk
+    to_ids query(query_str), spin_msg, &blk
+  end
 
-    raise "No valid targets given" unless @filter_expr
-    Jam::connection[:files].filter(@filter_expr).each{|r| ids << r[:id]}
-
+  ##################################################
+  ### IDs ##########################################
+  ##################################################
+  # Just grinds over a list of IDs. Takes no time at
+  # all; used by the other methods.
+  def to_ids ids, spin_msg=nil, &blk
     if spin_msg and Jam::environment!=:test
       with_spinner ids.size, spin_msg do |spin|
         ids.each do |id|
@@ -59,6 +75,26 @@ module Jam::ToTargets
   end
 
   private
+
+  def build_dataset_for target_paths
+    paths=[]
+    dirnames=[]
+    ids=[]
+
+    target_paths.each do |path|
+      tgt = Jam::Target.from_path(path,false)[0]
+      (File.directory?(path) ? dirnames : paths) << tgt.relroot if tgt
+    end
+
+    add_filter(:path=>paths) unless paths.empty?
+    dirnames.each do |dirname|
+      add_filter(:dirname.like("#{dirname}%"))
+    end
+
+    raise "No valid targets given" unless @filter_expr
+
+    Jam::connection[:files].filter(@filter_expr)
+  end
 
   attr_accessor :target_paths
 

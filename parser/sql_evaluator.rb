@@ -18,8 +18,9 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
     
     all_ft=Jam::connection[:files_tags].filter(:tag_id=>tag_id)
     all_ft=all_ft.filter("note #{comparator} ? ",value) if value
+    all_ft=all_ft.select(:file_id)
 
-    all_ft.select(:file_id).all.map{|r| r[:file_id]}
+    all_ft.all.map{|r| r[:file_id]}
   end
 
   # All the file IDs that there are (needed to do negation clauses)
@@ -31,7 +32,8 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
   end
 
   def result_files
-    Jam::connection[:files].filter(:id=>results).all
+    # Jam::connection[:files].filter(:id=>results).all
+    results.map{|r| Jam::File[:id=>r] }
   end
 
   def result_paths

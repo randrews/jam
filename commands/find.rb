@@ -8,7 +8,8 @@ class Jam::FindCommand < Jam::Command
 
     files=query(targets[0])
 
-    files.each do |file|
+    files.each do |id|
+      file=Jam::File.find(:id=>id)
       emit file.path
       file.describe_tags.each{|line| emit line}
     end

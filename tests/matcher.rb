@@ -16,8 +16,8 @@ describe "matcher" do
 
     Jam::File.at('two.txt').tag('tag2','foo')
 
-    Jam::File.at('one.txt').tag('num1','1')
-    Jam::File.at('two.txt').tag('num1','2')
+    Jam::File.at('one.txt').tag('num1',1)
+    Jam::File.at('two.txt').tag('num1',2)
     Jam::File.at('dir1/three.txt').tag('num1','foo')
   end
 
@@ -26,38 +26,38 @@ describe "matcher" do
   end
 
   it "should find with presence queries" do
-    files=query('tag1')
+    files=file_query('tag1')
     files.should==[Jam::File.at('one.txt')]
   end
 
   it "should find with equality queries" do
-    files=query("tag2='foo'")
+    files=file_query("tag2='foo'")
     files.should==[Jam::File.at('two.txt')]
   end
 
   it "should find with booleans" do
-    files=query("tag2 and tag3")
+    files=file_query("tag2 and tag3")
     files.should==[Jam::File.at('one.txt')]
   end
 
   it "should handle numeric values" do
-    files=query("num1=1")
+    files=file_query("num1=1")
     files.should==[Jam::File.at('one.txt')]
 
-    files=query("num1=0")
-    files.should==[Jam::File.at('dir1/three.txt')]
+    files=file_query("num1=0")
+    files.should==[]
   end
 
   it "should handle greater/less than" do
-    files=query("num1>1")
-    files.should==[Jam::File.at('two.txt')]
+    files=file_query("num1>1")
+    files.should==[Jam::File.at('two.txt'), Jam::File.at("dir1/three.txt")]
 
-    files=query("num1>'a'")
+    files=file_query("num1>'a'")
     files.should==[Jam::File.at('dir1/three.txt')]
   end
 
   it "should handle negation" do
-    files=query("num1 and not num1 = 1")
+    files=file_query("num1 and not num1 = 1")
     files.map(&:path).sort.should==['dir1/three.txt', 'two.txt']
   end
 end

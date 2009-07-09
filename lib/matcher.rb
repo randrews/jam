@@ -6,9 +6,14 @@
 # genre='ambient' or artist='James Horner' and (bitrate=192 or vbr)
 module Jam::Matcher
   def query str
-    matches=Jam::QueryEvaluator.evaluate(str).proc
-    Jam::File.all.delete_if do |file|
-      !matches[file]
-    end
+    sql_query(str).results
+  end
+
+  def file_query str
+    sql_query(str).result_files
+  end
+
+  def sql_query str
+    Jam::SqlEvaluator.evaluate(str)
   end
 end

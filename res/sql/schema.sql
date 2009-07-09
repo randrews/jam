@@ -18,7 +18,7 @@ create table files_tags (
        id integer primary key,
        file_id integer,
        tag_id integer,
-       note text,
+       note none,
        tagged_by text,
        created_at datetime,
        updated_at datetime

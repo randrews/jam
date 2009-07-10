@@ -26,14 +26,14 @@ describe "find command" do
   end
 
   it "should find files" do
-    Jam::FindCommand.run(@scratch_dir, {}, ["tag1"])
+    Jam::FindCommand.run(@scratch_dir, {:command_opts=>{:verbose=>true}}, ["tag1"])
     Jam::FindCommand.emitted.size.should==4 # file + three tags
     Jam::FindCommand.emitted[0].should=="one.txt"
     Jam::FindCommand.emitted[1].should=="\ttag1"
   end
 
   it "should find multiple files" do
-    Jam::FindCommand.run(@scratch_dir, {}, ["tag2"])
+    Jam::FindCommand.run(@scratch_dir, {:command_opts=>{:verbose=>true}}, ["tag2"])
 
     Jam::FindCommand.emitted.size.should==6 # file + three tags + file + one tag
 
@@ -44,5 +44,11 @@ describe "find command" do
 
     Jam::FindCommand.emitted[4].should=="two.txt"
     Jam::FindCommand.emitted[5].should=="\ttag2 = foo"
+  end
+
+  it "should list just filenames when not verbose" do
+    Jam::FindCommand.run(@scratch_dir, {}, ["tag1"])
+    Jam::FindCommand.emitted.size.should==1 # file
+    Jam::FindCommand.emitted[0].should=="one.txt"
   end
 end

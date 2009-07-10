@@ -6,6 +6,8 @@ class Jam::ViewCommand < Jam::Command
   end
 
   def run
+    connect_to_db
+
     name=targets.shift
     query=targets.shift
 

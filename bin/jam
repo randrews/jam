@@ -11,6 +11,9 @@ begin
   opts[:command_class].run '.', opts, opts[:targets]
 rescue Jam::JamError
   puts $!.message
+rescue
+  puts $!.message
+  puts $!.backtrace.join("\n\t")
 end
 
 if opts[:global_opts][:profile]

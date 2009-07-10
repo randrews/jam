@@ -25,6 +25,11 @@ describe "matcher" do
     remove_test_scratch_dir @scratch_dir
   end
 
+  it "should query fields" do
+    files=file_query(".filename = 'one.txt'")
+    files.should==[Jam::File.at('one.txt')]
+  end
+
   it "should find with presence queries" do
     files=file_query('tag1')
     files.should==[Jam::File.at('one.txt')]

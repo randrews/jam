@@ -9,7 +9,8 @@ class Jam::QueryLexerSpecification < Dhaka::LexerSpecification
     '>' => '>',
     '<' => '<',
     '>=' => '>=',
-    '<=' => '<='
+    '<=' => '<=',
+    'like' => 'like'
   }
 
   operators.each do |operator, regex|
@@ -31,6 +32,11 @@ class Jam::QueryLexerSpecification < Dhaka::LexerSpecification
 
   for_pattern(/[a-zA-Z0-9_\-]+/) do
     create_token('symbol')
+  end
+
+  for_pattern(/\.[a-zA-Z0-9_]+/) do
+    raw=current_lexeme.value
+    create_token('fieldname',raw[1..raw.size-1])
   end
 
   for_pattern('\s+') do

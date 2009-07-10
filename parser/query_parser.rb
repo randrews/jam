@@ -17,12 +17,18 @@ class Jam::QueryGrammar < Dhaka::Grammar
 
   for_symbol('Clause') do
     negated             %w| not Clause |
-    equality            %w| symbol = Value |
+    equality            %w| LeftValue = Value |
     presence            %w| symbol |
-    gt                  %w| symbol > Value |
-    lt                  %w| symbol < Value |
-    ge                  %w| symbol >= Value |
-    le                  %w| symbol <= Value |
+    gt                  %w| LeftValue > Value |
+    lt                  %w| LeftValue < Value |
+    ge                  %w| LeftValue >= Value |
+    le                  %w| LeftValue <= Value |
+    like                %w| LeftValue like Value |
+  end
+
+  for_symbol('LeftValue') do
+    symbol_lvalue       %w| symbol |
+    field_lvalue        %w| fieldname |
   end
 
   for_symbol('Value') do

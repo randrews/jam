@@ -13,14 +13,19 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
   end
 
   # Takes a tagname and an optional value, returns all the file IDs with that tag
-  def query(tagname, value=nil, comparator="=")
-    tag_id=get_tag(tagname)
-    
-    all_ft=Jam::db[:files_tags].filter(:tag_id=>tag_id)
-    all_ft=all_ft.filter("note #{comparator} ? ",value) if value
-    all_ft=all_ft.select(:file_id)
+  def query(type, tagname, value=nil, comparator="=")
+    if type==:symbol
+      tag_id=get_tag(tagname)
 
-    all_ft.all.map{|r| r[:file_id]}
+      all_ft=Jam::db[:files_tags].filter(:tag_id=>tag_id)
+      all_ft=all_ft.filter("note #{comparator} ? ",value) if value
+      all_ft=all_ft.select(:file_id)
+
+      all_ft.all.map{|r| r[:file_id]}
+    elsif type==:field
+      all_files=Jam::db[:files].filter("#{tagname} #{comparator} ?", value).select(:id)
+      all_files.all.map{|r| r[:id]}
+    end
   end
 
   # All the file IDs that there are (needed to do negation clauses)
@@ -66,13 +71,7 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
 
     for_presence do
       sym=child_nodes[0].token.value
-      query(sym)
-    end
-
-    for_equality do
-      sym=child_nodes[0].token.value
-      val=evaluate child_nodes[2]
-      query(sym,val)
+      query(:symbol,sym)
     end
 
     for_string do
@@ -83,28 +82,24 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
       child_nodes[0].token.value.to_f
     end
 
-    for_gt do
-      sym=child_nodes[0].token.value
-      val=evaluate child_nodes[2]
-      query sym,val,'>'
+    { 'equality'=>'=',
+      'gt'=>'>',
+      'lt'=>'<',
+      'ge'=>'>=',
+      'le'=>'<='}.each do |name, comp|
+      self.send("for_#{name}") do
+        (type, sym)=*evaluate(child_nodes[0])
+        val=evaluate child_nodes[2]
+        query(type,sym,val,comp)
+      end
     end
 
-    for_lt do
-      sym=child_nodes[0].token.value
-      val=evaluate child_nodes[2]
-      query sym,val,'<'
+    for_symbol_lvalue do
+      [:symbol, child_nodes[0].token.value]
     end
 
-    for_ge do
-      sym=child_nodes[0].token.value
-      val=evaluate child_nodes[2]
-      query sym,val,'>='
-    end
-
-    for_le do
-      sym=child_nodes[0].token.value
-      val=evaluate child_nodes[2]
-      query sym,val,'<='
+    for_field_lvalue do
+      [:field, child_nodes[0].token.value]
     end
   end
 

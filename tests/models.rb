@@ -22,7 +22,7 @@ describe "models" do
     # We'll make a new database, and then start using it
     @conn=establish_connection @scratch_dir+"/scratch.sqlite3"
     initialize_database @conn
-    Jam.connection=@conn
+    Jam::db=@conn
 
     # Our fixture now isn't there.
     Jam::File[1].nil?.should==true
@@ -30,6 +30,6 @@ describe "models" do
     # Set conn back to in-memory
     @conn=establish_connection nil
     initialize_database @conn
-    Jam.connection=@conn
+    Jam::db=@conn
   end
 end

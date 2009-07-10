@@ -42,7 +42,7 @@ class Jam::Command
   protected
 
   def connect_to_db
-    Jam.connection=establish_connection(dotjam('jam.sqlite3'))
+    Jam.db=establish_connection(dotjam('jam.sqlite3'))
   end
 
   def runtime

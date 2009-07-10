@@ -94,7 +94,7 @@ module Jam::ToTargets
 
     Jam::error("No valid targets given") unless @filter_expr
 
-    Jam::connection[:files].filter(@filter_expr)
+    Jam::db[:files].filter(@filter_expr)
   end
 
   attr_accessor :target_paths

@@ -1,4 +1,4 @@
-class Jam::Tag < Sequel::Model(Jam::connection[:tags])
+class Jam::Tag < Sequel::Model(Jam::db[:tags])
 
   def self.apply_associations
     many_to_many :file, :class=>Jam::File

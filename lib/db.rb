@@ -11,9 +11,9 @@ end
 # Jam has a handle to the Sequel connection, and we can't load the
 # model classes until it's set (because it defines their datasets).
 module Jam
-  def self.connection ; @connection ; end
+  def self.db ; @connection ; end
 
-  def self.connection= conn
+  def self.db= conn
     if @connection.nil?
       @connection=conn
       
@@ -29,7 +29,4 @@ module Jam
 
     @connection
   end
-
-  def self.db ; connection ; end
-  def self.db= value ; connection=value ; end
 end

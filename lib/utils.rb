@@ -19,12 +19,12 @@ def remove_test_scratch_dir scratch_dir=Jam::JAM_DIR+"/tests/scratch"
 end
 
 def verify_in_memory_connection clear=false
-  if !Jam::connection or clear
+  if !Jam::db or clear
     conn=establish_connection nil # in-memory
     initialize_database conn
-    Jam::connection=conn
+    Jam::db=conn
   end
-  Jam::connection
+  Jam::db
 end
 
 def prep_test_tree scratch_dir, tree_name

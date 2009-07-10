@@ -1,6 +1,6 @@
 require File.dirname(__FILE__)+'/tag.rb'
 
-class Jam::File < Sequel::Model(Jam::connection[:files])
+class Jam::File < Sequel::Model(Jam::db[:files])
   def self.apply_associations
     many_to_many :tags, :class=>Jam::Tag
   end
@@ -24,7 +24,7 @@ class Jam::File < Sequel::Model(Jam::connection[:files])
   def tag name, note=nil, agent_name=nil, set_created_at=false
     if has_tag? name
       tag=tags_dataset[:name=>name]
-      ft=Jam::connection[:files_tags].filter(:file_id=>id, :tag_id=>tag.id).first
+      ft=Jam::db[:files_tags].filter(:file_id=>id, :tag_id=>tag.id).first
       ft[:note] = note || ft[:note]
 
       if agent_name
@@ -34,7 +34,7 @@ class Jam::File < Sequel::Model(Jam::connection[:files])
       ft[:created_at]=Time.now if set_created_at
       ft[:updated_at]=Time.now
 
-      Jam::connection[:files_tags].filter(:id=>ft[:id]).update ft
+      Jam::db[:files_tags].filter(:id=>ft[:id]).update ft
       ft
     else
       add_tag Jam::Tag.find_or_create(:name=>name)
@@ -44,9 +44,9 @@ class Jam::File < Sequel::Model(Jam::connection[:files])
 
   def tags
     t={}
-    Jam::connection["select ft.*, tags.name "+
-                    "from files_tags ft, tags "+
-                    "where ft.file_id=? and ft.tag_id=tags.id",self.id].each do |row|
+    Jam::db["select ft.*, tags.name "+
+            "from files_tags ft, tags "+
+            "where ft.file_id=? and ft.tag_id=tags.id",self.id].each do |row|
       t[row[:name]] = {
         :note=>row[:note],
         :tagged_by=>agent_names(row[:tagged_by]),

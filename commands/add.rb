@@ -6,7 +6,7 @@ class Jam::AddCommand < Jam::Command
     t=targets
     t=['.'] if t.empty?
 
-    already_extant=Jam::connection[:files].select(:path).all.map{|r| r[:path]}.to_set
+    already_extant=Jam::db[:files].select(:path).all.map{|r| r[:path]}.to_set
     current_block=[]
     max_block_size=1000
     count=0
@@ -50,7 +50,7 @@ class Jam::AddCommand < Jam::Command
   def insert_block block, extant=nil
     extant += block.map{|r| r[:path]} if extant
     @threads << Thread.new do
-      Jam::connection[:files].multi_insert block
+      Jam::db[:files].multi_insert block
     end
   end
 

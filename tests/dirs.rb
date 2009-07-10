@@ -13,7 +13,7 @@ describe "command dirs" do
   end
 
   after :each do
-    Jam.connection << 'delete from files'
+    Jam::db << 'delete from files'
   end
 
   it "should find things when run from root" do

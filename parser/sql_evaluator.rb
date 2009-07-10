@@ -9,14 +9,14 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
 
   def get_tag(name)
     @tags ||= {}
-    @tags[name] ||= Jam::connection[:tags].filter(:name=>name).get :id
+    @tags[name] ||= Jam::db[:tags].filter(:name=>name).get :id
   end
 
   # Takes a tagname and an optional value, returns all the file IDs with that tag
   def query(tagname, value=nil, comparator="=")
     tag_id=get_tag(tagname)
     
-    all_ft=Jam::connection[:files_tags].filter(:tag_id=>tag_id)
+    all_ft=Jam::db[:files_tags].filter(:tag_id=>tag_id)
     all_ft=all_ft.filter("note #{comparator} ? ",value) if value
     all_ft=all_ft.select(:file_id)
 
@@ -26,13 +26,12 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
   # All the file IDs that there are (needed to do negation clauses)
   def universe
     if !@universe
-      @universe=Jam::connection[:files].select(:id).all.map{|r| r[:id]}
+      @universe=Jam::db[:files].select(:id).all.map{|r| r[:id]}
     end
     @universe
   end
 
   def result_files
-    # Jam::connection[:files].filter(:id=>results).all
     results.map{|r| Jam::File[:id=>r] }
   end
 

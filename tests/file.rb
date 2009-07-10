@@ -4,7 +4,7 @@ Jam::environment=:test
 describe "file" do
   before :all do
     verify_in_memory_connection true
-    @conn=Jam::connection
+    @conn=Jam::db
   end
 
   before :each do

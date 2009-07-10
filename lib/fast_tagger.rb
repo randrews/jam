@@ -15,7 +15,7 @@ class Jam::FastTagger
   def add_tagging_operation file_id
     # if currently tagged
     if current_tagged_ids.include?(file_id)
-      ids_to_update << Jam::connection[:files_tags].
+      ids_to_update << Jam::db[:files_tags].
         filter(:file_id=>file_id, :tag_id=>tag_object.id).
         select(:id).first[:id]
       flush_updates if ids_to_update.size >= MAX_BLOCK_SIZE
@@ -27,7 +27,7 @@ class Jam::FastTagger
 
   def add_detagging_operation file_id
     if current_tagged_ids.include?(file_id)
-      ids_to_delete << Jam::connection[:files_tags].
+      ids_to_delete << Jam::db[:files_tags].
         filter(:file_id=>file_id, :tag_id=>tag_object.id).
         select(:id).first[:id]
       flush_deletes if ids_to_delete.size >= MAX_BLOCK_SIZE
@@ -61,7 +61,7 @@ class Jam::FastTagger
 
   def current_tagged_files
     @current_tagged_files ||=
-      ( Jam::connection[:files].select(:path, :file_id=>:id).
+      ( Jam::db[:files].select(:path, :file_id=>:id).
         join(:files_tags, :file_id=>:id).
         filter(:tag_id=>tag_object.id).all )
   end
@@ -102,7 +102,7 @@ class Jam::FastTagger
   # Actually does DB operations
 
   def delete_files_tags
-    Jam::connection[:files_tags].filter(:id=>ids_to_delete.to_a).delete
+    Jam::db[:files_tags].filter(:id=>ids_to_delete.to_a).delete
   end
 
   def create_files_tags
@@ -116,11 +116,11 @@ class Jam::FastTagger
         :updated_at=>Time.now
       }}
 
-    Jam::connection[:files_tags].multi_insert(data)
+    Jam::db[:files_tags].multi_insert(data)
   end
 
   def update_files_tags
-    Jam::connection[:files_tags].
+    Jam::db[:files_tags].
       filter(:id=>ids_to_update.to_a).
       update(:note=>note,
              :tagged_by=>agent,

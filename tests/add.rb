@@ -13,7 +13,7 @@ describe "add command" do
   end
 
   after :each do
-    Jam.connection << 'delete from files'
+    Jam::db << 'delete from files'
   end
 
   it "should create files for all the things it spiders" do
@@ -56,9 +56,9 @@ describe "add command" do
 
   it "should ignore things that have already been added" do
     Jam::AddCommand.run @scratch_dir, {}, []
-    old=Jam.db[:files].count
+    old=Jam::db[:files].count
 
     Jam::AddCommand.run @scratch_dir, {}, ["dir1"]
-    Jam.db[:files].count.should==old
+    Jam::db[:files].count.should==old
   end
 end

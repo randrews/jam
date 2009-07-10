@@ -67,7 +67,7 @@ class Jam::TagCommand < Jam::Command
   def list_tags
     tag_counts={}
     Jam::Tag.all.each do |tag|
-      tag_counts[tag.name] = Jam::connection[:files_tags].filter(:tag_id=>tag.id).count
+      tag_counts[tag.name] = Jam::db[:files_tags].filter(:tag_id=>tag.id).count
     end
 
     tag_counts.keys.sort.each do |tagname|

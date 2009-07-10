@@ -29,4 +29,7 @@ module Jam
 
     @connection
   end
+
+  def self.db ; connection ; end
+  def self.db= value ; connection=value ; end
 end

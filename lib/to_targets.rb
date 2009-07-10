@@ -14,6 +14,7 @@ module Jam::ToTargets
     self.target_paths=target_paths
 
     count=target_count
+    Jam::error "No valid targets given" if target_count==0
 
     if spin_msg and Jam::environment!=:test
       with_spinner count, spin_msg do |spin|
@@ -105,7 +106,9 @@ module Jam::ToTargets
   cached :find_targets do
     targets=[]
     target_paths.each do |tp|
-      targets += Jam::Target.from_path tp
+      tgt=Jam::Target.from_path tp
+      Jam::error "Invalid target #{tp}" if tgt==[]
+      targets += tgt
     end
 
     targets

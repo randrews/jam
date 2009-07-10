@@ -49,4 +49,16 @@ describe "add command" do
 
     Jam::File.at('.jam/ignore').should be_nil
   end
+
+  it "should error when given a bad (nonexistant) path" do
+    lambda{ Jam::AddCommand.run(@scratch_dir,{},["not-there"]) }.should raise_error("Invalid target not-there")
+  end
+
+  it "should ignore things that have already been added" do
+    Jam::AddCommand.run @scratch_dir, {}, []
+    old=Jam.db[:files].count
+
+    Jam::AddCommand.run @scratch_dir, {}, ["dir1"]
+    Jam.db[:files].count.should==old
+  end
 end

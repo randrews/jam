@@ -34,6 +34,12 @@ describe "options parser" do
     opts3[:command_opts][:note].should == 'val'
   end
 
+  it "should recognize query params on tag" do
+    opts3=parse_options(["tag", '-d', 'tagname', '-q', 'other_tag<3'])
+    opts3[:targets].should==%w{tagname}
+    opts3[:command_opts][:query].should == 'other_tag<3'
+  end
+
   it "should recognize delete flag on tag" do
     opts=parse_options(["tag", '-d', 'foo', '1', '2'])
     opts[:command_opts][:delete].should_not be_false

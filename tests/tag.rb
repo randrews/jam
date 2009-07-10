@@ -111,4 +111,21 @@ describe "tag command" do
     Jam::File.at('one.txt').tags['tag1'][:note].should=='1'
     Jam::File.at('dir1/three.txt').tags['tag2'][:note].should=='foo bar'
   end  
+
+  it "should be able to tag the results of a query" do
+    Jam::TagCommand.run(@scratch_dir, {}, ["tag1","one.txt"])
+    Jam::TagCommand.run(@scratch_dir, {:command_opts=>{:query=>"tag1"}}, ["tag2"])
+
+    Jam::File.at('one.txt').has_tag?('tag2').should be_true
+    Jam::File.at('two.txt').has_tag?('tag2').should be_false
+  end
+
+  it "should be able to detag the results of a query" do
+    Jam::TagCommand.run(@scratch_dir, {}, ["tag1","one.txt"])
+    Jam::TagCommand.run(@scratch_dir, {}, ["tag2","one.txt","two.txt"])
+    Jam::TagCommand.run(@scratch_dir, {:command_opts=>{:query=>"tag1", :delete=>true}}, ["tag2"])
+
+    Jam::File.at('one.txt').has_tag?('tag1').should be_true
+    Jam::File.at('one.txt').has_tag?('tag2').should be_false
+  end
 end

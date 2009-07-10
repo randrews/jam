@@ -5,6 +5,7 @@ class Jam::TagCommand < Jam::Command
       opt :note, "The value to apply to the file for this tag", :short=>'n', :type=>String
       opt :agent, "The agent name to use when applying this tag", :short=>'a'
       opt :delete, "Delete the tag instead of applying it", :default=>false, :short=>'d'
+      opt :query, "Tag the results of a query instead of files/directories", :type=>String, :short=>'q'
     end
   end
 
@@ -16,7 +17,7 @@ class Jam::TagCommand < Jam::Command
     else
       (tagname, note) = parse_tagname(targets.shift)
       
-      if (opts[:command_opts][:delete] rescue nil)
+      if command_opts[:delete]
         count = detag_files(targets, tagname)
         operation = "Detagged"
       else
@@ -44,8 +45,14 @@ class Jam::TagCommand < Jam::Command
     Jam::error "Tag #{tagname} not found" if tag.nil?
     fast_tagger=Jam::FastTagger.new tagname
 
-    count=to_targets targets, "Detagging files..." do |id,tgt|
-      fast_tagger.add_detagging_operation id
+    if command_opts[:query]
+      count=to_query command_opts[:query], "Detagging files..." do |id,tgt|
+        fast_tagger.add_detagging_operation id
+      end
+    else
+      count=to_targets targets, "Detagging files..." do |id,tgt|
+        fast_tagger.add_detagging_operation id
+      end
     end
 
     fast_tagger.wait_for_finish
@@ -56,8 +63,14 @@ class Jam::TagCommand < Jam::Command
     agent=opts[:command_opts][:agent] rescue nil
     fast_tagger=Jam::FastTagger.new tagname, note, agent
 
-    count=to_targets targets, "Tagging files..." do |id,tgt|
-      fast_tagger.add_tagging_operation id
+    if command_opts[:query]
+      count=to_query command_opts[:query], "Tagging files..." do |id,tgt|
+        fast_tagger.add_tagging_operation id
+      end
+    else    
+      count=to_targets targets, "Tagging files..." do |id,tgt|
+        fast_tagger.add_tagging_operation id
+      end
     end
 
     fast_tagger.wait_for_finish

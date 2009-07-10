@@ -17,9 +17,9 @@ describe "file" do
   end
 
   after :each do
-    @conn << "delete from files"
-    @conn << "delete from tags"
-    @conn << "delete from files_tags"
+    [:files, :tags, :files_tags].each do |tbl|
+      @conn[tbl].delete
+    end
   end
 
   it "should set the created_at when you make one" do

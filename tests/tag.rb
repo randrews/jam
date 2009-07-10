@@ -14,7 +14,7 @@ describe "tag command" do
   end
 
   after :each do
-    Jam::db << 'delete from files_tags'
+    Jam::db[:files_tags].delete
   end
 
   after :all do

@@ -8,7 +8,7 @@ describe "models" do
   before :each do
     @conn=verify_in_memory_connection true
 
-    @conn << "delete from files"
+    @conn[:files].delete
     @conn[:files].insert(:id=>1, :path=>'foo.txt')
   end
 

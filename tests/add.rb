@@ -13,7 +13,7 @@ describe "add command" do
   end
 
   after :each do
-    Jam::db << 'delete from files'
+    Jam::db[:files].delete
   end
 
   it "should create files for all the things it spiders" do

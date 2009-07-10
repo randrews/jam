@@ -48,4 +48,6 @@ class Jam::Command
   def runtime
     Time.now - @start_time rescue 0
   end
+
+  def command_opts ; opts[:command_opts] || {} ; end
 end

@@ -21,7 +21,7 @@ class Jam::InitCommand < Jam::Command
       FileUtils.mkdir dotjam
     elsif File.exists?(dotjam) and File.directory?(dotjam)
       # .jam/ already exists, fail unless --force
-      if(opts[:force])
+      if(command_opts[:force])
         FileUtils.rm_rf dotjam
         create_dotjam
       else

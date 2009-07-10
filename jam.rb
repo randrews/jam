@@ -6,7 +6,7 @@ $startup_times << "#{Time.now-$start_time} Loaded Ruby APIs"
 
 %w{rubygems trollop sequel activesupport ruby-prof}.each do |gem|
   require gem
-  $startup_times << "#{Time.now-$start_time} loaded #{gem}"
+  $startup_times << "#{Time.now-$start_time} gem #{gem}"
 end
 
 module Jam
@@ -19,10 +19,10 @@ end
 Dir[Jam::JAM_DIR+"/lib/*.rb"].each do |file|
   require file
 end
-$startup_times << "Loaded lib #{Time.now-$start_time}"
+$startup_times << "#{Time.now-$start_time} Loaded lib"
 
 Dir[Jam::JAM_DIR+"/commands/*.rb"].each do |file|
   require file
   Jam::register_command(file)
 end
-$startup_times << "Loaded commands #{Time.now-$start_time}"
+$startup_times << "#{Time.now-$start_time} Loaded commands"

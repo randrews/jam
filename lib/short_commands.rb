@@ -8,9 +8,9 @@ module Jam::ShortCommands
 
     cmd_poss=possibilities(cmd_start, all_commands)
     if cmd_poss.length > 1
-      raise "\"#{cmd_start}\" is ambiguous. Which did you mean:\n\t"+cmd_poss.join("\n\t")
+      Jam::error "\"#{cmd_start}\" is ambiguous. Which did you mean:\n\t"+cmd_poss.join("\n\t")
     elsif cmd_poss.empty?
-      raise "Unknown command \"#{cmd_start}\"."
+      Jam::error "Unknown command \"#{cmd_start}\"."
     else
       cmd_poss[0]
     end

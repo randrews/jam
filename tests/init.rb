@@ -19,7 +19,7 @@ describe "init command (empty dir)" do
 
   it "shouldn't overwrite a .jam directory unless forced" do
     FileUtils.mkdir(@dotjam)
-    lambda { Jam::InitCommand.run(@scratch_dir) }.should raise_error "#{@dotjam} already exists; use --force to overwrite"
+    lambda { Jam::InitCommand.run(@scratch_dir) }.should raise_error("#{@dotjam} already exists; use --force to overwrite")
   end
 
   it "should overwrite a .jam directory when --force" do

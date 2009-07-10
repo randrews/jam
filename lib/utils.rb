@@ -1,6 +1,6 @@
 def verify_test_scratch_dir scratch_dir=Jam::JAM_DIR+"/tests/scratch"
   if File.exists? scratch_dir
-    raise "#{scratch_dir} already exists and is not a directory!" unless File.directory? scratch_dir
+    Jam::error "#{scratch_dir} already exists and is not a directory!" unless File.directory? scratch_dir
   else
     FileUtils.mkdir scratch_dir
   end
@@ -12,7 +12,7 @@ def remove_test_scratch_dir scratch_dir=Jam::JAM_DIR+"/tests/scratch"
   if File.directory? scratch_dir
     FileUtils.rm_rf scratch_dir
   else
-    raise "#{scratch_dir} is not a directory; something might be wrong..."
+    Jam::erorr "#{scratch_dir} is not a directory; something might be wrong..."
   end
 
   scratch_dir
@@ -62,5 +62,9 @@ module Jam
     Dir[Jam::JAM_DIR+"/parser/*.rb"].each do |file|
       require file
     end
+  end
+
+  def self.error str
+    raise Jam::JamError.new(str)
   end
 end

@@ -1,7 +1,7 @@
 module Jam::IgnoresFile
   cached :ignores do
     unless self.respond_to? :ignores_filenames
-      raise "ignores_filenames method not implemented"
+      raise NotImplementedException("You need to implement ignores_filenames")
     end
 
     ignores_array=[]

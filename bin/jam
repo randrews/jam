@@ -7,7 +7,11 @@ opts=parse_options
 
 RubyProf.start if opts[:global_opts][:profile]
 
-opts[:command_class].run '.', opts, opts[:targets]
+begin
+  opts[:command_class].run '.', opts, opts[:targets]
+rescue Jam::JamError
+  puts $!.message
+end
 
 if opts[:global_opts][:profile]
   result = RubyProf.stop

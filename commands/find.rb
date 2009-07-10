@@ -4,7 +4,7 @@ class Jam::FindCommand < Jam::Command
   def run
     connect_to_db
 
-    raise "No query specified" if targets.empty?
+    Jam::error("No query specified") if targets.empty?
 
     to_query(targets[0]) do |id|
       file=Jam::File.find(:id=>id)

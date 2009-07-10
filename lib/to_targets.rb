@@ -91,7 +91,7 @@ module Jam::ToTargets
       add_filter(:dirname.like("#{dirname}%"))
     end
 
-    raise "No valid targets given" unless @filter_expr
+    Jam::error("No valid targets given") unless @filter_expr
 
     Jam::connection[:files].filter(@filter_expr)
   end

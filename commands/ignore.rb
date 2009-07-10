@@ -8,10 +8,6 @@ class Jam::IgnoreCommand < Jam::Command
     end
   end
 
-  def command_opts
-    opts[:command_opts] || {}
-  end
-
   def ignores_filenames
     if command_opts[:all]
       [ dotjam('ignore'),

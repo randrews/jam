@@ -25,6 +25,14 @@ describe "matcher" do
     remove_test_scratch_dir @scratch_dir
   end
 
+  it "should allow 'like' clauses" do
+    files=file_query(".filename like '%.txt'")
+    files.length.should==4
+
+    files=file_query("tag2 like 'f%'")
+    files.should==[Jam::File.at('two.txt')]
+  end
+
   it "should query fields" do
     files=file_query(".filename = 'one.txt'")
     files.should==[Jam::File.at('one.txt')]

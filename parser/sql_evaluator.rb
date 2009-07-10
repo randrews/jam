@@ -82,15 +82,21 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
       child_nodes[0].token.value.to_f
     end
 
-    { 'equality'=>'=',
+    for_comparison do
+      (type, sym)=*evaluate(child_nodes[0])
+      comp=evaluate(child_nodes[1])
+      val=evaluate child_nodes[2]
+      query(type,sym,val,comp)
+    end
+
+    { 'eq'=>'=',
       'gt'=>'>',
       'lt'=>'<',
       'ge'=>'>=',
-      'le'=>'<='}.each do |name, comp|
-      self.send("for_#{name}") do
-        (type, sym)=*evaluate(child_nodes[0])
-        val=evaluate child_nodes[2]
-        query(type,sym,val,comp)
+      'le'=>'<=',
+      'like'=>'like'}.each do |name, sym|
+      self.send("for_#{name}_comparator") do
+        child_nodes[0].token.value
       end
     end
 

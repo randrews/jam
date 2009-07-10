@@ -17,13 +17,17 @@ class Jam::QueryGrammar < Dhaka::Grammar
 
   for_symbol('Clause') do
     negated             %w| not Clause |
-    equality            %w| LeftValue = Value |
     presence            %w| symbol |
-    gt                  %w| LeftValue > Value |
-    lt                  %w| LeftValue < Value |
-    ge                  %w| LeftValue >= Value |
-    le                  %w| LeftValue <= Value |
-    like                %w| LeftValue like Value |
+    comparison          %w| LeftValue Operator Value |
+  end
+
+  for_symbol('Operator') do
+    eq_comparator          %w| = |
+    gt_comparator          %w| > |
+    lt_comparator          %w| < |
+    ge_comparator          %w| >= |
+    le_comparator          %w| <= |
+    like_comparator        %w| like |
   end
 
   for_symbol('LeftValue') do

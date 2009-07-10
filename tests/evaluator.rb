@@ -2,6 +2,10 @@ require "#{File.dirname(__FILE__)}/../jam.rb"
 Jam::environment=:test
 
 describe "query language evaluator" do
+  before :all do
+    Jam::require_parser
+  end
+
   it "should generate a proc" do
     e=Jam::QueryEvaluator.evaluate 'a'
     e.text.should=="Proc.new{|file| file.has_tag?('a') }"

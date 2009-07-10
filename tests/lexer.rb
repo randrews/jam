@@ -2,6 +2,10 @@ require "#{File.dirname(__FILE__)}/../jam.rb"
 Jam::environment=:test
 
 describe "query language lexer" do
+  before :all do
+    Jam::require_parser
+  end
+
   def tokens str
     t=[]
     Jam::QueryLexer.lex(str).each do |token|

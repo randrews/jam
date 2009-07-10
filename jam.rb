@@ -4,7 +4,7 @@ require 'fileutils'
 require 'pathname'
 $startup_times << "#{Time.now-$start_time} Loaded Ruby APIs"
 
-%w{rubygems trollop sequel dhaka activesupport ruby-debug ruby-prof}.each do |gem|
+%w{rubygems trollop sequel activesupport ruby-prof}.each do |gem|
   require gem
   $startup_times << "#{Time.now-$start_time} loaded #{gem}"
 end
@@ -20,11 +20,6 @@ Dir[Jam::JAM_DIR+"/lib/*.rb"].each do |file|
   require file
 end
 $startup_times << "Loaded lib #{Time.now-$start_time}"
-
-Dir[Jam::JAM_DIR+"/parser/*.rb"].each do |file|
-  require file
-end
-$startup_times << "Loaded parser #{Time.now-$start_time}"
 
 Dir[Jam::JAM_DIR+"/commands/*.rb"].each do |file|
   require file

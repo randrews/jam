@@ -14,6 +14,7 @@ module Jam::Matcher
   end
 
   def sql_query str
+    Jam::require_parser
     Jam::SqlEvaluator.evaluate(str)
   end
 end

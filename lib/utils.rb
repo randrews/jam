@@ -55,4 +55,12 @@ module Jam
   def self.environment= env
     @environment = env || :production
   end
+
+  def self.require_parser
+    require 'dhaka'
+
+    Dir[Jam::JAM_DIR+"/parser/*.rb"].each do |file|
+      require file
+    end
+  end
 end

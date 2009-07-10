@@ -1,15 +1,13 @@
-require 'rubygems'
+$startup_times=["#{$start_time=Time.now} Begin loading jam.rb"]
 
 require 'fileutils'
 require 'pathname'
+$startup_times << "#{Time.now-$start_time} Loaded Ruby APIs"
 
-require 'trollop'
-require 'sequel'
-require 'dhaka'
-require 'activesupport'
-
-require 'ruby-debug' rescue nil
-require 'ruby-prof' rescue nil
+%w{rubygems trollop sequel dhaka activesupport ruby-debug ruby-prof}.each do |gem|
+  require gem
+  $startup_times << "#{Time.now-$start_time} loaded #{gem}"
+end
 
 module Jam
   JAM_VERSION="0.0.1" unless const_defined? "JAM_VERSION"
@@ -21,12 +19,15 @@ end
 Dir[Jam::JAM_DIR+"/lib/*.rb"].each do |file|
   require file
 end
+$startup_times << "Loaded lib #{Time.now-$start_time}"
 
 Dir[Jam::JAM_DIR+"/parser/*.rb"].each do |file|
   require file
 end
+$startup_times << "Loaded parser #{Time.now-$start_time}"
 
 Dir[Jam::JAM_DIR+"/commands/*.rb"].each do |file|
   require file
   Jam::register_command(file)
 end
+$startup_times << "Loaded commands #{Time.now-$start_time}"

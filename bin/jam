@@ -11,6 +11,8 @@ opts[:command_class].run '.', opts, opts[:targets]
 
 if opts[:global_opts][:profile]
   result = RubyProf.stop
+  $startup_times.each{|line| puts line}
+  puts "-"*50
   printer = RubyProf::FlatPrinter.new(result)
   printer.print(STDOUT, 0)
 end

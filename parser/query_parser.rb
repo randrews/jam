@@ -46,14 +46,18 @@ class Jam::QueryGrammar < Dhaka::Grammar
   end
 
   for_symbol('SortColumns') do
-    column_list         %w| OneColumn , SortColumns |
-    one_column          %w| OneColumn |
+    column_list         %w| SortColumn , SortColumns |
+    one_sort_column     %w| SortColumn |
   end
 
-  for_symbol('OneColumn') do
-    sort_column_default %w| LeftValue |
-    sort_column_asc     %w| LeftValue asc |
-    sort_column_desc    %w| LeftValue desc |
+  for_symbol('SortColumn') do
+    sort_column          %w| LeftValue AscDesc |
+  end
+
+  for_symbol('AscDesc') do
+    asc_sort_direction  %w| asc |
+    desc_sort_direction %w| desc |
+    def_sort_direction  %w| |
   end
 end
 

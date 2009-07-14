@@ -1,11 +1,14 @@
 require(File.dirname(__FILE__)+"/query_lexer.rb")
 require(File.dirname(__FILE__)+"/query_parser.rb")
+require(File.dirname(__FILE__)+"/sql_sorter.rb")
 
 class Jam::SqlEvaluator < Dhaka::Evaluator
+  include Jam::SqlSorter
 
   self.grammar=Jam::QueryGrammar
 
   attr_accessor :results
+  attr_accessor :sort_columns
 
   def get_tag(name)
     @tags ||= {}
@@ -14,7 +17,7 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
 
   # Takes a tagname and an optional value, returns all the file IDs with that tag
   def query(type, tagname, value=nil, comparator="=")
-    if type==:symbol
+    if type==:tag
       tag_id=get_tag(tagname)
 
       all_ft=Jam::db[:files_tags].filter(:tag_id=>tag_id)
@@ -47,6 +50,8 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
   define_evaluation_rules do
     for_start do
       self.results = evaluate(child_nodes[0])
+      self.sort_columns = evaluate(child_nodes[1])
+      self.results = post_process(self.sort_columns, results)
     end
 
     for_parenthesized_query do
@@ -71,7 +76,7 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
 
     for_presence do
       sym=child_nodes[0].token.value
-      query(:symbol,sym)
+      query(:tag,sym)
     end
 
     for_string do
@@ -101,12 +106,33 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
     end
 
     for_symbol_lvalue do
-      [:symbol, child_nodes[0].token.value]
+      [:tag, child_nodes[0].token.value]
     end
 
     for_field_lvalue do
       [:field, child_nodes[0].token.value]
     end
+
+    for_empty_process do
+      []
+    end
+
+    for_sort_process{evaluate(child_nodes[2])}
+
+    for_column_list{evaluate(child_nodes[0]) + evaluate(child_nodes[2])}
+    for_one_sort_column{evaluate(child_nodes[0])}
+
+    for_sort_column do
+      lvalue=evaluate(child_nodes[0])
+      col = { :name=>lvalue[1].to_sym,
+              :type=>lvalue[0],
+              :direction=>evaluate(child_nodes[1]) }
+      [col]
+    end
+
+    for_asc_sort_direction{ :asc }
+    for_desc_sort_direction{ :desc }
+    for_def_sort_direction{ :asc }
   end
 
   def self.evaluate query

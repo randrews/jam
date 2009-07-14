@@ -2,6 +2,7 @@ class Jam::ViewCommand < Jam::Command
   def parse_options opts
     Trollop::options(opts) do
       opt :append, "Add to a pre-existing view", :default=>false, :short=>'a'
+      opt :order, "Field name to order by", :type=>String, :short=>'o', :default=>"filename"
     end
   end
 

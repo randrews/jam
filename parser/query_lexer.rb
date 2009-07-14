@@ -34,6 +34,11 @@ class Jam::QueryLexerSpecification < Dhaka::LexerSpecification
     create_token('symbol')
   end
 
+  for_pattern(/@[a-zA-Z0-9_\-]+/) do
+    raw=current_lexeme.value
+    create_token('symbol',raw[1..raw.size-1])
+  end
+
   for_pattern(/\.[a-zA-Z0-9_]+/) do
     raw=current_lexeme.value
     create_token('fieldname',raw[1..raw.size-1])

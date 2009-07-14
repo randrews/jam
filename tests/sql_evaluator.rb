@@ -13,6 +13,7 @@ describe "find command" do
     Jam::File.at('dir1/three.txt').tag('tag3')
 
     Jam::File.at('two.txt').tag('tag2','foo')
+    Jam::File.at('two.txt').tag('filename','one.txt')
   end
 
   after :all do
@@ -29,5 +30,9 @@ describe "find command" do
 
   it "should handle more complex queries" do
     Jam::SqlEvaluator.evaluate("tag3 or (tag2 and not tag2='foo')").result_paths.should==["dir1/three.txt", "one.txt"]
+  end
+
+  it "should let me use @ signs to fore interpretation as a tag name" do
+    Jam::SqlEvaluator.evaluate("@filename='one.txt'").result_paths.should==["two.txt"]    
   end
 end

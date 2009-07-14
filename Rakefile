@@ -12,6 +12,9 @@ task :clean do
   puts "Removing .dot files"
   `rm -f *.dot`
 
+  puts "Removing generated parse tree visualizations"
+  `rm -f *.dot.png`
+
   puts "Removing built gem"
   `rm -f jam-*.gem`
 end
@@ -26,13 +29,15 @@ task :parse do
   filename=ENV['FILENAME'] || 'parse.dot'
 
   require File.join(File.dirname(__FILE__),'jam.rb')
+  Jam::require_parser
 
   tree = Jam::QueryParser.parse(Jam::QueryLexer.lex(query))
-  puts Jam::QueryEvaluator.evaluate_tree(tree).text
+  puts tree.inspect if tree.is_a? Dhaka::ParseErrorResult
 
   File.open(filename, 'w') do |file|
     file << tree.to_dot
   end
+  `dot -Tpng -o#{filename}.png #{filename}`
 end
 
 task :gem do

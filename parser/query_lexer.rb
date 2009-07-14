@@ -10,12 +10,19 @@ class Jam::QueryLexerSpecification < Dhaka::LexerSpecification
     '<' => '<',
     '>=' => '>=',
     '<=' => '<=',
-    'like' => 'like'
+    'like' => 'like',
+    'sort' => 'sort',
+    ',' => ',',
+    'asc' => 'asc',
+    'desc' => 'desc',
   }
 
   operators.each do |operator, regex|
     for_pattern(regex) do
-      create_token(operator)
+      create_token(operator.downcase)
+    end
+    for_pattern(regex.upcase) do
+      create_token(operator.downcase)
     end
   end
 

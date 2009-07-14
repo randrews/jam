@@ -5,7 +5,7 @@ class Jam::QueryGrammar < Dhaka::Grammar
   end
 
   for_symbol(Dhaka::START_SYMBOL_NAME) do
-    start               %w| Query |
+    start               %w| Query PostProcesses |
   end
 
   for_symbol('Query') do
@@ -38,6 +38,22 @@ class Jam::QueryGrammar < Dhaka::Grammar
   for_symbol('Value') do
     string              %w| string |
     number              %w| number |
+  end
+
+  for_symbol('PostProcesses') do
+    empty_process       %w| |
+    sort_process        %w| sort ( SortColumns ) |
+  end
+
+  for_symbol('SortColumns') do
+    column_list         %w| OneColumn , SortColumns |
+    one_column          %w| OneColumn |
+  end
+
+  for_symbol('OneColumn') do
+    sort_column_default %w| LeftValue |
+    sort_column_asc     %w| LeftValue asc |
+    sort_column_desc    %w| LeftValue desc |
   end
 end
 

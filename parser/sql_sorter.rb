@@ -15,15 +15,15 @@ module Jam::SqlSorter
       # Actually sort things
       ids.sort do |a, b|
         n=0
-        n+=1 while orders[n][a]==orders[n][b] and n<orders.size
-
-        val1=orders[n][a]
-        val2=orders[n][b]
-        dir=dirs[n]
+        n+=1 while n<orders.size and orders[n][a]==orders[n][b]
 
         if n==orders.size # These are equal, we're out of orderings
           0
         else # Something's unequal
+          val1=orders[n][a]
+          val2=orders[n][b]
+          dir=dirs[n]
+
           if dir==:asc
             if val1.nil? # a is nil, b isn't, a<b
               -1
@@ -67,7 +67,7 @@ module Jam::SqlSorter
         filter(:file_id=>ids, :tag_id=>tag_id).
         select(:file_id, :note).
         each{|row| hash[row[:file_id]]=row[:note]}
-    elsif col[:type]==:field      
+    elsif col[:type]==:field
       if name==:id
         ids.each{|id| hash[id]=id}
       else

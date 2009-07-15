@@ -22,6 +22,11 @@ describe "find command" do
     Jam::File.at('two.txt').tag('nulls')
     Jam::File.at('dir1/three.txt').tag('nulls',4)
     Jam::File.at('dir1/dir2/four.txt').tag('nulls')
+
+    Jam::File.at('one.txt').tag('same',2)
+    Jam::File.at('two.txt').tag('same',2)
+    Jam::File.at('dir1/three.txt').tag('same',2)
+    Jam::File.at('dir1/dir2/four.txt').tag('same',2)
   end
 
   after :all do
@@ -42,5 +47,9 @@ describe "find command" do
     ev=Jam::SqlEvaluator.evaluate("everything sort(@nulls desc, .filename)")
     # three and one both have nulls tag, so they go first, then the rest in ascending filename order
     ev.result_files.map(&:filename).should==%w{three.txt one.txt four.txt two.txt}
+  end
+
+  it "should sort two objects that are effectively equal" do
+    lambda{ Jam::SqlEvaluator.evaluate("everything sort(same)").result_files.map(&:filename) }.should_not raise_error
   end
 end

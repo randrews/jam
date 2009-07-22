@@ -76,4 +76,10 @@ describe "view command" do
     Dir["#{@scratch_dir}/view/*"].size.should==3
     File.exists?("#{@scratch_dir}/view/0003_one.txt").should be_true
   end
+
+  it "should let us tag things in a view" do
+    Jam::ViewCommand.run(@scratch_dir, {}, ["view", "tag2"])
+    Jam::TagCommand.run(@scratch_dir, {:command_opts=>{:view=>'view'}}, ["tag3"])
+    Jam::SqlEvaluator.evaluate("tag3").result_paths.should==["dir1/dir2/four.txt", "dir1/three.txt"]
+  end
 end

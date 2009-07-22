@@ -1,7 +1,6 @@
-require(Jam::JAM_DIR+"/lib/list_file.rb")
-
 class Jam::ViewCommand < Jam::Command
   include Jam::ListFile
+  include Jam::ViewUtils
 
   def parse_options opts
     Trollop::options(opts) do
@@ -95,18 +94,6 @@ class Jam::ViewCommand < Jam::Command
     FileUtils.ln_s("../#{path}","#{view_path}/#{num_label}_#{filename}")
   end
 
-  def view_exists? name
-    exists_in_file? dotjam('views'), name
-  end
-
-  def add_to_view_list name
-    add_to_file dotjam('views'), name
-  end
-
-  def remove_from_view_list name
-    remove_from_file dotjam('views'), name
-  end
-
   def can_create? name
     !File.exists?(view_dir(name))
   end
@@ -115,9 +102,5 @@ class Jam::ViewCommand < Jam::Command
     dir=view_dir(name)
     FileUtils.mkdir(dir)
     dir
-  end
-
-  def view_dir name
-    File.join(root('.'),name)
   end
 end

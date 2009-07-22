@@ -1,9 +1,13 @@
 require(File.dirname(__FILE__)+"/spinner.rb")
 require(File.dirname(__FILE__)+"/matcher.rb")
+require(File.dirname(__FILE__)+"/view_utils.rb")
+require(File.dirname(__FILE__)+"/list_file.rb")
 
 module Jam::ToTargets
   include Jam::Spinner
   include Jam::Matcher
+  include Jam::ViewUtils
+  include Jam::ListFile
 
   ##################################################
   ### Filesystem targets ###########################
@@ -51,6 +55,23 @@ module Jam::ToTargets
   # given query. Very fast.
   def to_query query_str, spin_msg=nil, &blk
     to_ids query(query_str), spin_msg, &blk
+  end
+
+  ##################################################
+  ### View #########################################
+  ##################################################
+  # Grinds over anything in the given view.
+  def to_view view_name, spin_msg=nil, &blk
+    Jam::error "View #{view_name} not found" unless view_exists?(view_name)
+
+    paths = []
+    Dir[File.join(view_dir(view_name),"*")].map do |file|
+      path = File.readlink(file) rescue nil
+      paths << path[3..path.size] if path # paths all begin with ../
+    end
+
+    ids = Jam::db[:files].filter(:path=>paths).select(:id).all.map{|r| r[:id]}
+    to_ids ids, spin_msg, &blk
   end
 
   ##################################################

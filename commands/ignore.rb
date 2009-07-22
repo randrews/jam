@@ -1,5 +1,3 @@
-require(Jam::JAM_DIR+"/lib/list_file.rb")
-
 class Jam::IgnoreCommand < Jam::Command
   include Jam::ListFile
   include Jam::IgnoresFile

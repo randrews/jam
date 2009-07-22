@@ -6,6 +6,7 @@ class Jam::TagCommand < Jam::Command
       opt :agent, "The agent name to use when applying this tag", :short=>'a'
       opt :delete, "Delete the tag instead of applying it", :default=>false, :short=>'d'
       opt :query, "Tag the results of a query instead of files/directories", :type=>String, :short=>'q'
+      opt :view, "Tag the contents of a view instead of files/directories", :type=>String, :short=>'v'
     end
   end
 
@@ -49,6 +50,10 @@ class Jam::TagCommand < Jam::Command
       count=to_query command_opts[:query], "Detagging files..." do |id,tgt|
         fast_tagger.add_detagging_operation id
       end
+    elsif command_opts[:view]
+      count=to_view command_opts[:view], "Detagging files..." do |id,tgt|
+        fast_tagger.add_detagging_operation id
+      end
     else
       count=to_targets targets, "Detagging files..." do |id,tgt|
         fast_tagger.add_detagging_operation id
@@ -65,6 +70,10 @@ class Jam::TagCommand < Jam::Command
 
     if command_opts[:query]
       count=to_query command_opts[:query], "Tagging files..." do |id,tgt|
+        fast_tagger.add_tagging_operation id
+      end
+    elsif command_opts[:view]
+      count=to_view command_opts[:view], "Tagging files..." do |id,tgt|
         fast_tagger.add_tagging_operation id
       end
     else    

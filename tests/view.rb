@@ -41,4 +41,8 @@ describe "view command" do
     File.exists?("#{@scratch_dir}/view/0001_four.txt").should be_true
     File.exists?("#{@scratch_dir}/view/0002_three.txt").should be_true
   end
+
+  it "should not allow us to make a view of a file that already exists" do
+    lambda{ Jam::ViewCommand.run(@scratch_dir, {}, ["one.txt", "tag2"]) }.should(raise_error(Jam::JamError))
+  end
 end

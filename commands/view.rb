@@ -38,7 +38,12 @@ class Jam::ViewCommand < Jam::Command
 
   def view_exists? name ; false ; end
 
-  def add_to_view_list name ; end
+  def add_to_view_list name
+    File.open(dotjam('views'),'a') do |file|
+        file << name
+        file << "\n"
+    end
+  end
 
   def can_create? name
     !File.exists?(view_dir(name))

@@ -9,14 +9,39 @@ module Jam::IgnoresFile
     ignores_filenames.each do |ignores_filename|
       next unless File.readable? ignores_filename
 
-      File.open ignores_filename do |io|
-        io.each_line do |line|
-          line=line.strip
-          ignores_array << line unless line.empty? or line[0].chr=="#"
-          end
+      # Special case for views list
+      if File.basename(ignores_filename)=='views'
+        ignores_array += ignores_for_views(ignores_filename)
+      else
+        each_noncomment_line(ignores_filename) do |line|
+          ignores_array << line
+        end
       end
     end
 
     ignores_array
+  end
+
+  def ignores_for_views views_file
+    ignores=[]
+
+    each_noncomment_line(views_file) do |view|
+      ignores << "./#{view}/**/*"
+      ignores << "./#{view}/*"
+    end
+
+    ignores
+  end
+
+  private
+
+  def each_noncomment_line file, &blk
+    File.open file do |io|
+      io.each_line do |line|
+        line=line.strip
+        next if line.empty? or line[0].chr=="#"
+        blk.call line
+      end
+    end
   end
 end

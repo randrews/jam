@@ -1,7 +1,10 @@
 require "#{File.dirname(__FILE__)}/../jam.rb"
+require Jam::JAM_DIR+"/lib/list_file.rb"
 Jam::environment=:test
 
 describe "view command" do
+  include Jam::ListFile
+
   before :all do
     @scratch_dir=verify_test_scratch_dir
     prep_test_tree @scratch_dir, 'simple_dir'
@@ -23,6 +26,7 @@ describe "view command" do
   it "should raise an error unless given good arguments" do
     lambda{ Jam::ViewCommand.run(@scratch_dir) }.should raise_error
     lambda{ Jam::ViewCommand.run(@scratch_dir, {}, ["view"]) }.should raise_error
+    lambda{ Jam::ViewCommand.run(@scratch_dir, {:command_opts=>{:delete=>true}}, ["view"]) }.should raise_error
     lambda{ Jam::ViewCommand.run(@scratch_dir, {}, ["view", "query"]) }.should_not raise_error
   end
 
@@ -55,5 +59,21 @@ describe "view command" do
   it "should only delete views" do
     lambda{ Jam::ViewCommand.run(@scratch_dir, {:command_opts=>{:delete=>true}}, ["one.txt"]) }.should raise_error(Jam::JamError)
     File.exists?("#{@scratch_dir}/one.txt").should be_true
+  end
+
+  it "should handle deleting views that have already been removed by hand" do
+    Jam::ViewCommand.run(@scratch_dir, {}, ["view", "tag2"])
+    `rm -rf #{@scratch_dir}/view`
+    lambda{ Jam::ViewCommand.run(@scratch_dir, {:command_opts=>{:delete=>true}}, ["view"]) }.should_not raise_error
+    exists_in_file?("#{@scratch_dir}/.jam/views","view").should be_false
+  end
+
+  it "should append to views" do
+    Jam::ViewCommand.run(@scratch_dir, {}, ["view", "tag2"])
+    Dir["#{@scratch_dir}/view/*"].size.should==2
+
+    Jam::ViewCommand.run(@scratch_dir, {:command_opts=>{:append=>true}}, ["view", "tag1"])
+    Dir["#{@scratch_dir}/view/*"].size.should==3
+    File.exists?("#{@scratch_dir}/view/0003_one.txt").should be_true
   end
 end

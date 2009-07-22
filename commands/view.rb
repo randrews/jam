@@ -17,6 +17,9 @@ class Jam::ViewCommand < Jam::Command
 
     if command_opts[:delete]
       delete_view name
+    elsif command_opts[:append]
+      query=targets.shift
+      append_to_view name, query
     else
       query=targets.shift
       create_view name, query
@@ -25,11 +28,37 @@ class Jam::ViewCommand < Jam::Command
 
   private
 
+  def append_to_view name, query
+    Jam::error "Usage: jam view -a <name> <query>" unless name and query
+    Jam::error "#{name} is not a view" unless view_exists?(name)
+
+    dir=view_dir(name)
+    Jam::error "#{dir} is not a directory" unless File.directory?(dir)
+
+    num=1
+
+    # Find the last file's number in the directory
+    Dir["#{dir}/*"].sort.reverse.each do |file|
+      if File.basename(file)=~/^(\d+)_/
+        num=$1.to_i
+        break
+      end
+    end
+
+    # Get the list of files already in the view
+    already_in_view = Dir["#{dir}/*"].map do |file|
+      File.readlink(file)
+    end
+
+    to_query query, "Appending files..." do |id|
+      file=Jam::db[:files][:id=>id]
+      add_file_to_view dir, file, num unless already_in_view.include?("../#{file[:path]}")
+      num+=1
+    end
+  end
+
   def create_view name, query
     Jam::error "Usage: jam view <name> <query>" unless name and query
-
-    raise NotImplementedException if command_opts[:append]
-
     Jam::error "Cannot create view #{name}; file exists" unless can_create?(name)
 
     add_to_view_list(name)
@@ -38,18 +67,13 @@ class Jam::ViewCommand < Jam::Command
     num=1
     to_query query, "Assembling files..." do |id|
       file=Jam::db[:files][:id=>id]
-      path=file[:path]
-      filename=file[:filename]
-      num_label=num.to_s.rjust(4,'0')
-
-      FileUtils.ln_s("../#{path}","#{view_path}/#{num_label}_#{filename}")
+      add_file_to_view view_path, file, num
       num+=1
     end
   end
 
   def delete_view name
     Jam::error "Usage: jam view -d <name>" unless name
-
     Jam::error "#{name} is not a view" unless view_exists?(name)
 
     dir=view_dir(name)
@@ -61,6 +85,14 @@ class Jam::ViewCommand < Jam::Command
     end
 
     remove_from_view_list name
+  end
+
+  def add_file_to_view view_path, file, num
+    path=file[:path]
+    filename=file[:filename]
+    num_label=num.to_s.rjust(4,'0')
+
+    FileUtils.ln_s("../#{path}","#{view_path}/#{num_label}_#{filename}")
   end
 
   def view_exists? name

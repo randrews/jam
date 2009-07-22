@@ -1,8 +1,12 @@
+require(Jam::JAM_DIR+"/lib/list_file.rb")
+
 class Jam::ViewCommand < Jam::Command
+  include Jam::ListFile
+
   def parse_options opts
     Trollop::options(opts) do
       opt :append, "Add to a pre-existing view", :default=>false, :short=>'a'
-      opt :order, "Field name to order by", :type=>String, :short=>'o', :default=>"filename"
+      opt :delete, "Delete a pre-existing view", :default=>false, :short=>'d'
     end
   end
 
@@ -10,8 +14,18 @@ class Jam::ViewCommand < Jam::Command
     connect_to_db
 
     name=targets.shift
-    query=targets.shift
 
+    if command_opts[:delete]
+      delete_view name
+    else
+      query=targets.shift
+      create_view name, query
+    end
+  end
+
+  private
+
+  def create_view name, query
     Jam::error "Usage: jam view <name> <query>" unless name and query
 
     raise NotImplementedException if command_opts[:append]
@@ -31,18 +45,34 @@ class Jam::ViewCommand < Jam::Command
       FileUtils.ln_s("../#{path}","#{view_path}/#{num_label}_#{filename}")
       num+=1
     end
-
   end
 
-  private
+  def delete_view name
+    Jam::error "Usage: jam view -d <name>" unless name
 
-  def view_exists? name ; false ; end
+    Jam::error "#{name} is not a view" unless view_exists?(name)
+
+    dir=view_dir(name)
+
+    if File.directory?(dir)
+      FileUtils.rm_rf dir
+    else
+      emit "#{dir} not found; removing from view list"
+    end
+
+    remove_from_view_list name
+  end
+
+  def view_exists? name
+    exists_in_file? dotjam('views'), name
+  end
 
   def add_to_view_list name
-    File.open(dotjam('views'),'a') do |file|
-        file << name
-        file << "\n"
-    end
+    add_to_file dotjam('views'), name
+  end
+
+  def remove_from_view_list name
+    remove_from_file dotjam('views'), name
   end
 
   def can_create? name

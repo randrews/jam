@@ -45,4 +45,15 @@ describe "view command" do
   it "should not allow us to make a view of a file that already exists" do
     lambda{ Jam::ViewCommand.run(@scratch_dir, {}, ["one.txt", "tag2"]) }.should(raise_error(Jam::JamError))
   end
+
+  it "should let us delete a view" do
+    Jam::ViewCommand.run(@scratch_dir, {}, ["view", "tag2"])
+    Jam::ViewCommand.run(@scratch_dir, {:command_opts=>{:delete=>true}}, ["view"])
+    File.exists?("#{@scratch_dir}/view").should be_false
+  end
+
+  it "should only delete views" do
+    lambda{ Jam::ViewCommand.run(@scratch_dir, {:command_opts=>{:delete=>true}}, ["one.txt"]) }.should raise_error(Jam::JamError)
+    File.exists?("#{@scratch_dir}/one.txt").should be_true
+  end
 end

@@ -29,6 +29,21 @@ end
 
 def prep_test_tree scratch_dir, tree_name
   `cp -R #{Jam::JAM_DIR}/tests/fixtures/#{tree_name}/ #{scratch_dir}`
+
+  jam=Proc.new do |*args|
+    args=args.flatten.join(" ").split(/\s+/)
+    opts=parse_options args
+    opts[:command_class].run scratch_dir, opts, opts[:targets]
+  end
+
+  yield jam if block_given?
+
+  jam
+end
+
+def preserve_test_tree scratch_dir, preserve_name
+  FileUtils::mkdir_p "#{Jam::JAM_DIR}/preserved/#{preserve_name}"
+  `cp -R #{scratch_dir}/ #{Jam::JAM_DIR}/preserved/#{preserve_name}`
 end
 
 def create_fake_logger

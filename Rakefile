@@ -17,6 +17,9 @@ task :clean do
 
   puts "Removing built gem"
   `rm -f jam-*.gem`
+
+  puts "Removing preserved test trees"
+  `rm -rf preserved`
 end
 
 task :test do

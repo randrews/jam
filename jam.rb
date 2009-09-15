@@ -4,7 +4,7 @@ require 'fileutils'
 require 'pathname'
 $startup_times << "#{Time.now-$start_time} Loaded Ruby APIs"
 
-%w{rubygems trollop sequel activesupport ruby-prof}.each do |gem|
+%w{rubygems trollop sequel ruby-prof set}.each do |gem|
   require gem
   $startup_times << "#{Time.now-$start_time} gem #{gem}"
 end

@@ -24,10 +24,10 @@ end
 
 def class_for_command cmd, pwd=FileUtils.pwd
   begin
-    "jam/#{cmd}_command".classify.constantize
+    ("Jam::"+"#{cmd}_command".camelize).constantize
   rescue NameError
     dj=find_dotjam(pwd)
     require File.join(dj,"commands","#{cmd}.rb")
-    "#{cmd}_command".classify.constantize
+    "#{cmd}_command".camelize.constantize
   end
 end

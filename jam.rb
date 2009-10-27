@@ -1,5 +1,6 @@
 $startup_times=["#{$start_time=Time.now} Begin loading jam.rb"]
 
+require 'abbrev'
 require 'fileutils'
 require 'pathname'
 $startup_times << "#{Time.now-$start_time} Loaded Ruby APIs"

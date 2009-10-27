@@ -1,18 +1,14 @@
 module Jam::ShortCommands
-  def possibilities start, all_commands
-    all_commands.reject{|cmd| !cmd.starts_with? start }
-  end
-
   def short_for cmd_start, all_commands=Jam.command_names.keys
     return cmd_start if all_commands.index(cmd_start)
 
-    cmd_poss=possibilities(cmd_start, all_commands)
-    if cmd_poss.length > 1
-      Jam::error "\"#{cmd_start}\" is ambiguous. Which did you mean:\n\t"+cmd_poss.join("\n\t")
-    elsif cmd_poss.empty?
+    completions = all_commands.abbrev(cmd_start)
+    if completions[cmd_start]
+      completions[cmd_start]
+    elsif completions.values.uniq.empty?
       Jam::error "Unknown command \"#{cmd_start}\"."
     else
-      cmd_poss[0]
+      Jam::error "\"#{cmd_start}\" is ambiguous. Which did you mean:\n\t"+cmd_poss.join("\n\t")
     end
   end
 end

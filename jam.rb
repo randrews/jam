@@ -11,7 +11,7 @@ $startup_times << "#{Time.now-$start_time} Loaded Ruby APIs"
 end
 
 module Jam
-  JAM_VERSION="0.0.1" unless const_defined? "JAM_VERSION"
+  JAM_VERSION="0.0.5" unless const_defined? "JAM_VERSION"
 
   # The directory jam.rb is in, so we can look up global resources
   JAM_DIR=File.expand_path(File.dirname(__FILE__)) unless const_defined? "JAM_DIR"

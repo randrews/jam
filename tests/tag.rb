@@ -4,7 +4,7 @@ Jam::environment=:test
 describe "tag command" do
   before :all do
     @scratch_dir=verify_test_scratch_dir
-    prep_test_tree @scratch_dir, 'simple_dir'
+    @jam = prep_test_tree @scratch_dir, 'simple_dir'
     Jam::InitCommand.run(@scratch_dir)
     Jam::AddCommand.run(@scratch_dir)
   end
@@ -127,5 +127,10 @@ describe "tag command" do
 
     Jam::File.at('one.txt').has_tag?('tag1').should be_true
     Jam::File.at('one.txt').has_tag?('tag2').should be_false
+  end
+
+  it "should not allow a tag named after a field" do
+    lambda{ @jam["tag id one.txt"] }.should raise_error
+    lambda{ @jam["tag id=7 one.txt"] }.should raise_error
   end
 end

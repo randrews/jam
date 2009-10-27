@@ -32,23 +32,24 @@ describe "find command" do
     Jam::SqlEvaluator.evaluate("tag3 or (tag2 and not tag2='foo')").result_paths.should==["dir1/three.txt", "one.txt"]
   end
 
-  it "should let me use @ signs to fore interpretation as a tag name" do
-    Jam::SqlEvaluator.evaluate("@filename='one.txt'").result_paths.should==["two.txt"]    
-  end
-
   it "should parse sort clauses" do
-    ev=Jam::SqlEvaluator.evaluate("tag1 sort(tag1 desc, .id)")
+    ev=Jam::SqlEvaluator.evaluate("tag1 sort(tag1 desc, id)")
     ev.sort_columns.should==[{:name=>:tag1, :type=>:tag, :direction=>:desc},
                              {:name=>:id, :type=>:field, :direction=>:asc}]
   end
 
   it "should parse a single sort clause" do
-    ev=Jam::SqlEvaluator.evaluate("tag1 sort(.filename asc)")
+    ev=Jam::SqlEvaluator.evaluate("tag1 sort(filename asc)")
     ev.sort_columns.should==[{:name=>:filename, :type=>:field, :direction=>:asc}]
   end
 
   it "should allow no sort clauses" do
     ev=Jam::SqlEvaluator.evaluate("tag1")
     ev.sort_columns.should==[]
+  end
+
+  it "should be able to query by fields" do
+    ev=Jam::SqlEvaluator.evaluate("filename='one.txt'")
+    ev.result_paths.should==["one.txt"]
   end
 end

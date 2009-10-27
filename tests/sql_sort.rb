@@ -34,7 +34,7 @@ describe "find command" do
   end
 
   it "should sort a simple field clause" do
-    ev=Jam::SqlEvaluator.evaluate("everything sort(.filename desc)")
+    ev=Jam::SqlEvaluator.evaluate("everything sort(filename desc)")
     ev.result_files.map(&:filename).should==%w{two.txt three.txt one.txt four.txt}
   end
 
@@ -44,7 +44,7 @@ describe "find command" do
   end
 
   it "should sort by two things at once" do
-    ev=Jam::SqlEvaluator.evaluate("everything sort(@nulls desc, .filename)")
+    ev=Jam::SqlEvaluator.evaluate("everything sort(nulls desc, filename)")
     # three and one both have nulls tag, so they go first, then the rest in ascending filename order
     ev.result_files.map(&:filename).should==%w{three.txt one.txt four.txt two.txt}
   end

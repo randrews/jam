@@ -82,4 +82,8 @@ module Jam
   def self.error str
     raise Jam::JamError.new(str)
   end
+
+  def self.fieldname? name
+    Jam::db[:files].columns.map(&:to_s).include? name
+  end
 end

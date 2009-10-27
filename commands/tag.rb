@@ -17,6 +17,8 @@ class Jam::TagCommand < Jam::Command
       list_tags
     else
       (tagname, note) = parse_tagname(targets.shift)
+
+      Jam::error "#{tagname} is not allowed as a tag name" if Jam::fieldname? tagname
       
       if command_opts[:delete]
         count = detag_files(targets, tagname)

@@ -47,6 +47,10 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
     result_files.map{|f| f[:path]}
   end
 
+  ##################################################
+  ### Evaluation rules #############################
+  ##################################################
+
   define_evaluation_rules do
     for_start do
       self.results = evaluate(child_nodes[0])
@@ -106,11 +110,11 @@ class Jam::SqlEvaluator < Dhaka::Evaluator
     end
 
     for_symbol_lvalue do
-      [:tag, child_nodes[0].token.value]
-    end
-
-    for_field_lvalue do
-      [:field, child_nodes[0].token.value]
+      if Jam::fieldname? child_nodes[0].token.value
+        [:field, child_nodes[0].token.value]
+      else
+        [:tag, child_nodes[0].token.value]
+      end
     end
 
     for_empty_process do

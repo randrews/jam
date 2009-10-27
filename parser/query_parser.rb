@@ -32,7 +32,6 @@ class Jam::QueryGrammar < Dhaka::Grammar
 
   for_symbol('LeftValue') do
     symbol_lvalue       %w| symbol |
-    field_lvalue        %w| fieldname |
   end
 
   for_symbol('Value') do

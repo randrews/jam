@@ -26,7 +26,7 @@ describe "matcher" do
   end
 
   it "should allow 'like' clauses" do
-    files=file_query(".filename like '%.txt'")
+    files=file_query("filename like '%.txt'")
     files.length.should==4
 
     files=file_query("tag2 like 'f%'")
@@ -34,7 +34,7 @@ describe "matcher" do
   end
 
   it "should query fields" do
-    files=file_query(".filename = 'one.txt'")
+    files=file_query("filename = 'one.txt'")
     files.should==[Jam::File.at('one.txt')]
   end
 
